@@ -1,32 +1,37 @@
-//
-//  DatabaseManagerApp.swift
-//  DatabaseManager
-//
-//  Created by thierryH24 on 24/08/2025.
-//
-
 import SwiftUI
 import SwiftData
+import Foundation
+import Combine
+import AppKit
+internal import UniformTypeIdentifiers
 
+// MARK: - App principale
 @main
 struct DatabaseManagerApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+    
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
-
+    @StateObject private var containerManager = ContainerManager()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(containerManager)
+                .frame(minWidth: 900, minHeight: 600)
         }
-        .modelContainer(sharedModelContainer)
+        .commands {
+            CommandGroup(after: .newItem) {
+                Button("Create New Document...") {
+                    // Action pour nouveau fichier
+                }
+                .keyboardShortcut("n")
+                
+                Button("Open existing document...") {
+                    // Action pour fichiers récents
+                }
+                .keyboardShortcut("o", modifiers: [.command, .shift])
+            }
+        }
     }
 }
+
