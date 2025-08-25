@@ -9,14 +9,14 @@ Gestionnaire moderne pour bases de données SwiftData sur macOS.
 
 
 <p align="center">
-<img src="Doc/Capture1_en.png" alt="splsh">
+<img src="Doc/Capture1_fr.png" alt="splsh">
 <p align="center">
 <em>Welcome</em>
 </p>
 </p>
 
 <p align="center">
-<img src="Doc/Capture2_en.png" alt="main">
+<img src="Doc/Capture2_fr.png" alt="main">
 <p align="center">
 <em>Main</em>
 </p>

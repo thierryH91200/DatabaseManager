@@ -35,3 +35,11 @@ struct DatabaseManagerApp: App {
     }
 }
 
+final class AppGlobals {
+    static let shared = AppGlobals()
+    let schema = Schema([Person.self])
+    
+    private init() {}
+}
+
+

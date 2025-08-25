@@ -14,7 +14,6 @@ import Combine
 struct MainAppView: View {
 
     @EnvironmentObject var containerManager: ContainerManager
-    
     @State private var isDarkMode = false
 
     var body: some View {
@@ -153,7 +152,10 @@ struct PersonListView: View {
                 name: $newPersonName,
                 age: $newPersonAge,
                 isPresented: $showingAddPerson,
-                modelContext: modelContext
+                modelContext: modelContext,
+                onAdd: {
+                    people = PersonManager.shared.getAllData()
+                }
             )
         }
     }
@@ -167,3 +169,4 @@ struct PersonListView: View {
         }
     }
 }
+

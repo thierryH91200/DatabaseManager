@@ -1,3 +1,8 @@
+
+
+
+
+
 # DatabaseManager
 
 Modern manager for SwiftData databases on macOS.

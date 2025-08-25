@@ -9,8 +9,6 @@ import SwiftUI
 import SwiftData
 import Combine
 
-
-
 // MARK: - Container Manager avec gestion fichiers récents
 class ContainerManager: ObservableObject {
     @Published var currentContainer: ModelContainer?
@@ -89,6 +87,9 @@ class ContainerManager: ObservableObject {
     
     // MARK: - Gestion des bases de données
     func createNewDatabase(at url: URL) {
+
+        let schema = AppGlobals.shared.schema
+
         do {
             // Nettoie l'URL et s'assurer qu'elle a l'extension .store
             var cleanURL = url
@@ -118,12 +119,11 @@ class ContainerManager: ObservableObject {
             }
             
             let config = ModelConfiguration(
-                schema: Schema([Person.self]),
+                schema: schema,
                 url: cleanURL,
-                allowsSave: true,          // Autorisation explicite de sauvegarde
-                cloudKitDatabase: .none    // Désactive CloudKit
+                allowsSave: true
             )
-
+            
             let container = try ModelContainer(for: Person.self, configurations: config)
             
             // Ajouter une personne d'exemple
@@ -151,7 +151,6 @@ class ContainerManager: ObservableObject {
         }
     }
     
-
     func openDatabase(at url: URL) {
         do {
             let config = ModelConfiguration(

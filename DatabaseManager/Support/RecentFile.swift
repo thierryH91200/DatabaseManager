@@ -119,6 +119,8 @@ struct AddPersonSheet: View {
     @Binding var isPresented: Bool
     let modelContext: ModelContext
     
+    let onAdd: () -> Void
+    
     var body: some View {
         NavigationView {
             Form {
@@ -152,6 +154,7 @@ struct AddPersonSheet: View {
                         
                         isPresented = false
                         resetFields()
+                        onAdd()
                     }
                     .disabled(name.isEmpty)
                 }
