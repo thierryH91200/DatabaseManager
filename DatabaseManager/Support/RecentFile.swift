@@ -67,7 +67,6 @@ struct RecentFileRow: View {
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }
-            
             Spacer()
             
             // Vérifier si le fichier existe encore

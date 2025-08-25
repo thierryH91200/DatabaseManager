@@ -94,6 +94,10 @@ struct PersonListView: View {
     @State private var newPersonAge = 25
     
     @State private var people: [Person] = []
+    @State private var selectedItem: Person.ID?
+    @State private var sortOrder = [KeyPathComparator(\Person.name)]
+
+
 
     var body: some View {
         VStack {
@@ -114,26 +118,15 @@ struct PersonListView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                List {
-                    ForEach(people) { person in
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(person.name)
-                                    .font(.headline)
-                                Text("\(person.age) years")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            
-                            Spacer()
-                            
-                            Text(person.createdAt, style: .date)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
+                Table(people, selection: $selectedItem, sortOrder: $sortOrder, columns: {
+                    TableColumn("Name", value: \.name)
+                    TableColumn("Age") { person in
+                        Text("\(person.age)")
                     }
-                    .onDelete(perform: deletePeople)
-                }
+                    TableColumn("CreateAt") { person in
+                        Text("\(person.createdAt, style: .date)")
+                    }
+                })
             }
         }
         .toolbar {
