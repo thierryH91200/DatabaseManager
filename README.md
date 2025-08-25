@@ -1,18 +1,39 @@
+# DatabaseManager
 
-Showing Recent Issues
-Command CodeSign failed with a nonzero exit code
+Modern manager for SwiftData databases on macOS.
 
+<a href="README.md">English</a> | <a href="README_fr.md">Français</a>
 
-Showing Recent Issues
-CodeSign /Users/thierryh24/Library/Developer/Xcode/DerivedData/DataBaseManager-geadghjnrtrpwaaykzorslfyxobw/Build/Products/Debug/DataBaseManager.app (in target 'DataBaseManager' from project 'DataBaseManager')
-    cd /Users/thierryh24/Documents/pegase/DatabaseManager
-    
-    Signing Identity:     "Apple Development: thierry.hentic@gmail.com (P98EP488D8)"
-    
-    /usr/bin/codesign --force --sign 8CC7ADE56B88B4EDE6005C684632D26223663AAA --entitlements /Users/thierryh24/Library/Developer/Xcode/DerivedData/DataBaseManager-geadghjnrtrpwaaykzorslfyxobw/Build/Intermediates.noindex/DataBaseManager.build/Debug/DataBaseManager.build/DataBaseManager.app.xcent --timestamp\=none --generate-entitlement-der /Users/thierryh24/Library/Developer/Xcode/DerivedData/DataBaseManager-geadghjnrtrpwaaykzorslfyxobw/Build/Products/Debug/DataBaseManager.app
+<p align="center">
+<img src="Doc/Capture1_en.png" alt="Transactions">
+<p align="center">
+<em>Welcome</em>
+</p>
+</p>
 
-/Users/thierryh24/Library/Developer/Xcode/DerivedData/DataBaseManager-geadghjnrtrpwaaykzorslfyxobw/Build/Products/Debug/DataBaseManager.app: resource fork, Finder information, or similar detritus not allowed
-Command CodeSign failed with a nonzero exit code
+<p align="center">
+<img src="Doc/Capture2_en.png" alt="Transactions">
+<p align="center">
+<em>Main</em>
+</p>
+</p>
 
-Command CodeSign failed with a nonzero exit code
+## Overview
 
+**DatabaseManager** is a macOS application that allows you to create, open, and manage databases in the SwiftData format. The app offers a modern interface (SwiftUI), recent files management, and manipulation of Person entities (name, age, creation date).
+
+## Features
+
+- Create a new SwiftData database
+- Open existing databases
+- List of recent files
+- Add, edit, delete people
+- Display detailed information (name, age, date)
+- Reset user preferences
+- Dark mode support
+
+## Installation
+
+1. Clone this repository:
+   ```sh
+   git clone <repo-url>
