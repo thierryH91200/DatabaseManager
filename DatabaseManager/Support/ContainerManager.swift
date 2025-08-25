@@ -62,43 +62,41 @@ class ContainerManager: ObservableObject {
         saveRecentFiles()
     }
     
-    func createSimpleDatabase() {
-        
-        let container: ModelContainer
-        
-        let url = URL.documentsDirectory.appendingPathComponent("test.sqlite")
-        
-        // Supprimer s'il existe
-        try? FileManager.default.removeItem(at: url)
-        
-        do {
-            container = try ModelContainer(for: Person.self)
-            // Test juste la création, sans ModelConfiguration personnalisée
-        } catch {
-            print("Erreur simple: \(error)")
-        }
-        
-//        let context = container.mainContext
-//        let newSamplePerson = Person(name: "Exemple \(url.lastPathComponent)", age: 25)
-//        context.insert(newSamplePerson)
-//        try context.save()
-       
-//        print("✅ Base de données créée avec succès")
-        
-        // Ouvrir la base créée
-        openDatabase(at: url)
-    }
+//    func createSimpleDatabase() {
+//        
+//        let container: ModelContainer
+//        let url = URL.documentsDirectory.appendingPathComponent("test.sqlite")
+//        
+//        // Supprimer s'il existe
+//        try? FileManager.default.removeItem(at: url)
+//        do {
+//            container = try ModelContainer(for: Person.self)
+//            // Test juste la création, sans ModelConfiguration personnalisée
+//        } catch {
+//            print("Erreur simple: \(error)")
+//        }
+//        
+////        let context = container.mainContext
+////        let newSamplePerson = Person(name: "Exemple \(url.lastPathComponent)", age: 25)
+////        context.insert(newSamplePerson)
+////        try context.save()
+//       
+////        print("✅ Base de données créée avec succès")
+//        
+//        // Ouvrir la base créée
+//        openDatabase(at: url)
+//    }
     
     // MARK: - Gestion des bases de données
     func createNewDatabase(at url: URL) {
         do {
-            // Nettoyer l'URL et s'assurer qu'elle a l'extension .sqlite
+            // Nettoie l'URL et s'assurer qu'elle a l'extension .store
             var cleanURL = url
             if cleanURL.pathExtension != "store" {
                 cleanURL = cleanURL.appendingPathExtension("store")
             }
             
-            // Supprimer les espaces et caractères problématiques du nom
+            // Supprime les espaces et caractères problématiques du nom
             let fileName = cleanURL.lastPathComponent
                 .replacingOccurrences(of: " ", with: "_")
                 .replacingOccurrences(of: "'", with: "")
@@ -138,22 +136,18 @@ class ContainerManager: ObservableObject {
                 print("✅ L'entité a été sauvée avec succès.")
             } catch {
                 print("❌ Erreur lors de la sauvegarde : \(error)")
-                if let sqliteError = error as? NSError {
-                    print("❌ Code SQLite: \(sqliteError.code)")
-                    print("❌ Détails: \(sqliteError.userInfo)")
-                }
+                let sqliteError = error as NSError
+                print("❌ Code SQLite: \(sqliteError.code)")
+                print("❌ Détails: \(sqliteError.userInfo)")
             }
-
-            
             // Ouvrir la base créée
             openDatabase(at: cleanURL)
             
         } catch {
             print("❌ Erreur lors de la création : \(error)")
-            if let sqliteError = error as? NSError {
-                print("❌ Code SQLite: \(sqliteError.code)")
-                print("❌ Détails: \(sqliteError.userInfo)")
-            }
+            let sqliteError = error as NSError
+            print("❌ Code SQLite: \(sqliteError.code)")
+            print("❌ Détails: \(sqliteError.userInfo)")
         }
     }
     
@@ -172,7 +166,7 @@ class ContainerManager: ObservableObject {
             let recentFile = RecentFile(name: currentDatabaseName, url: url)
             addToRecentFiles(recentFile)
             
-            // Fermer le splash screen
+            // Ferme le splash screen
             showingSplashScreen = false
             
         } catch {

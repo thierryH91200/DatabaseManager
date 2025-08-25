@@ -6,7 +6,16 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		03450C672E5C8BFB00305096 /* README_fr.md in Resources */ = {isa = PBXBuildFile; fileRef = 03450C662E5C8BFB00305096 /* README_fr.md */; };
+		03450C6D2E5C8E1000305096 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 03450C6C2E5C8E1000305096 /* README.md */; };
+		03450C6F2E5C918F00305096 /* README_en.md in Resources */ = {isa = PBXBuildFile; fileRef = 03450C6E2E5C918F00305096 /* README_en.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		03450C662E5C8BFB00305096 /* README_fr.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README_fr.md; sourceTree = "<group>"; };
+		03450C6C2E5C8E1000305096 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		03450C6E2E5C918F00305096 /* README_en.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README_en.md; sourceTree = "<group>"; };
 		035D4FC22E5B2D82002F62C3 /* DataBaseManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataBaseManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -14,6 +23,11 @@
 		035D4FC42E5B2D82002F62C3 /* DatabaseManager */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = DatabaseManager;
+			sourceTree = "<group>";
+		};
+		035D52D62E5C3AC1002F62C3 /* Doc */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Doc;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,6 +46,10 @@
 		035D4FB92E5B2D82002F62C3 = {
 			isa = PBXGroup;
 			children = (
+				03450C6C2E5C8E1000305096 /* README.md */,
+				03450C6E2E5C918F00305096 /* README_en.md */,
+				03450C662E5C8BFB00305096 /* README_fr.md */,
+				035D52D62E5C3AC1002F62C3 /* Doc */,
 				035D4FC42E5B2D82002F62C3 /* DatabaseManager */,
 				035D4FC32E5B2D82002F62C3 /* Products */,
 			);
@@ -62,6 +80,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				035D4FC42E5B2D82002F62C3 /* DatabaseManager */,
+				035D52D62E5C3AC1002F62C3 /* Doc */,
 			);
 			name = DataBaseManager;
 			packageProductDependencies = (
@@ -110,6 +129,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03450C6D2E5C8E1000305096 /* README.md in Resources */,
+				03450C672E5C8BFB00305096 /* README_fr.md in Resources */,
+				03450C6F2E5C918F00305096 /* README_en.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

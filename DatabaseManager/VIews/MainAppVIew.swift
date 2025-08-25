@@ -12,8 +12,11 @@ import Combine
 
 // MARK: - Vue principale de l'app
 struct MainAppView: View {
+
     @EnvironmentObject var containerManager: ContainerManager
     
+    @State private var isDarkMode = false
+
     var body: some View {
         NavigationSplitView {
             // Sidebar
@@ -27,7 +30,6 @@ struct MainAppView: View {
                         Button("Close") {
                             containerManager.closeCurrentDatabase()
                         }
-                        
                         Button("Show in Finder") {
                             if let url = containerManager.currentDatabaseURL {
                                 NSWorkspace.shared.activateFileViewerSelecting([url])
@@ -58,17 +60,35 @@ struct MainAppView: View {
                     .modelContainer(container)
                     .navigationTitle("Persons")
             } else {
-                Text("Aucune base de données ouverte")
+                Text("No database is open")
                     .font(.title2)
                     .foregroundColor(.secondary)
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .navigation) {
+                Button {
+                    containerManager.closeCurrentDatabase()
+                } label: {
+                    Label("Home", systemImage: "house")
+                }
+            }
+            ToolbarItem(placement: .automatic) {
+                Button {
+                    isDarkMode.toggle()
+                } label: {
+                    Label(isDarkMode ? "Light mode" : "Dark mode",
+                          systemImage: isDarkMode ? "sun.max" : "moon")
+                }
+            }
+        }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
 
 // MARK: - Vue liste des personnes (simplifiée)
 struct PersonListView: View {
-//    @Query private var people: [Person]
+
     @Environment(\.modelContext) private var modelContext
     @State private var showingAddPerson = false
     @State private var newPersonName = ""
@@ -88,7 +108,7 @@ struct PersonListView: View {
                         .font(.title2)
                         .foregroundColor(.secondary)
                     
-                    Button("Ajouter la première personne") {
+                    Button("Add the first person") {
                         showingAddPerson = true
                     }
                     .buttonStyle(.borderedProminent)
@@ -101,7 +121,7 @@ struct PersonListView: View {
                             VStack(alignment: .leading) {
                                 Text(person.name)
                                     .font(.headline)
-                                Text("\(person.age) ans")
+                                Text("\(person.age) years")
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
                             }
