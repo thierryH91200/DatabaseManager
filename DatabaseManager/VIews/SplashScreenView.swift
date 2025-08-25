@@ -110,8 +110,8 @@ private struct LeftPanelView: View {
     }
     // https://stackoverflow.com/questions/40761140/how-to-pre-load-database-in-core-data-using-swift-3-xcode-8
     func preloadDBData() {
-        let folder = "WelcomeToBDD"
-        let file = "SampleWelcomeTo.store"
+        let folder = "DataBaseManager"
+        let file = "SampleDataBaseManager.store"
         let documentsURL = URL.documentsDirectory
         let newDirectory = documentsURL.appendingPathComponent(folder)
 
