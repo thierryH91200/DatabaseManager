@@ -60,30 +60,6 @@ class ContainerManager: ObservableObject {
         saveRecentFiles()
     }
     
-//    func createSimpleDatabase() {
-//        
-//        let container: ModelContainer
-//        let url = URL.documentsDirectory.appendingPathComponent("test.sqlite")
-//        
-//        // Supprimer s'il existe
-//        try? FileManager.default.removeItem(at: url)
-//        do {
-//            container = try ModelContainer(for: Person.self)
-//            // Test juste la création, sans ModelConfiguration personnalisée
-//        } catch {
-//            print("Erreur simple: \(error)")
-//        }
-//        
-////        let context = container.mainContext
-////        let newSamplePerson = Person(name: "Exemple \(url.lastPathComponent)", age: 25)
-////        context.insert(newSamplePerson)
-////        try context.save()
-//       
-////        print("✅ Base de données créée avec succès")
-//        
-//        // Ouvrir la base créée
-//        openDatabase(at: url)
-//    }
     
     // MARK: - Gestion des bases de données
     func createNewDatabase(at url: URL) {

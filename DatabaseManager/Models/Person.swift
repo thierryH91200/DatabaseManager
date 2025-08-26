@@ -23,7 +23,6 @@ class Person {
     }
 }
 
-
 final class PersonManager: ObservableObject {
     
     static let shared = PersonManager()
@@ -65,6 +64,16 @@ final class PersonManager: ObservableObject {
             return []
         }
         return entitiesPerson
+    }
+    
+    func delete(entity: Person, undoManager: UndoManager?) {
+        guard let context = modelContext else { return }
+
+        context.undoManager = undoManager
+        context.undoManager?.beginUndoGrouping()
+        context.undoManager?.setActionName("Delete Person")
+        context.delete(entity)
+        context.undoManager?.endUndoGrouping()
     }
 }
 

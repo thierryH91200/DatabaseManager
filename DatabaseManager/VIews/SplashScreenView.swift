@@ -71,6 +71,7 @@ private struct LeftPanelView: View {
                     preloadDBData()
                 }
 
+#if DEBUG
                 Button("Reset preferences…") {
                     showResetAlert = true
                 }
@@ -86,6 +87,7 @@ private struct LeftPanelView: View {
                 } message: {
                     Text(String(localized: "This operation will delete all application preferences. Are you sure you want to proceed?"))
                 }
+#endif
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(NSColor.windowBackgroundColor))
@@ -160,9 +162,6 @@ private struct LeftPanelView: View {
         } catch {
             print("Erreur lors de la copie : \(error)")
         }
-//        openHandler(storeURL)
-//        recentManager.addProject(with: storeURL)
-//        appState.isProjectOpen = true
     }
 }
 
@@ -228,25 +227,3 @@ struct SplashScreenView: View {
 
 }
 
-
-
-
-//    .fileImporter(
-//        isPresented: $showingFilePicker,
-//        allowedContentTypes: [.data],
-//        allowsMultipleSelection: false
-//    ) { result in
-//        switch result {
-//        case .success(let urls):
-//            if let url = urls.first {
-//                // Vérifier l'extension avant d'ouvrir
-//                if url.pathExtension.lowercased() == "store" {
-//                    containerManager.openDatabase(at: url)
-//                } else {
-//                    print("Format de fichier non supporté")
-//                }
-//            }
-//        case .failure(let error):
-//            print("Erreur sélection fichier: \(error)")
-//        }
-//    }
