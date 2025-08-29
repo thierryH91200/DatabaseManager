@@ -47,6 +47,7 @@ private struct LeftPanelView: View {
                 UniformLabeledButton("Create a new file",
                                      systemImage: "plus.circle.fill",
                                      minWidth: 300,
+                                     minHeight: 30,
                                      style: .borderedProminent) {
                     showSavePanel()
                 }
@@ -54,6 +55,7 @@ private struct LeftPanelView: View {
                 // 2
                 UniformLabeledButton("Open existing document...",
                                      minWidth: 300,
+                                     minHeight: 30,
                                      style: .borderedProminent) {
                     let panel = NSOpenPanel()
                     panel.canChooseFiles = true
@@ -68,6 +70,7 @@ private struct LeftPanelView: View {
                 // 3
                 UniformLabeledButton("Open sample document Project...",
                                      minWidth: 300,
+                                     minHeight: 30,
                                      style: .borderedProminent) {
                     preloadDBData()
                 }
@@ -76,6 +79,7 @@ private struct LeftPanelView: View {
                 // 4
                 UniformLabeledButton("Reset preferences…",
                                      minWidth: 300,
+                                     minHeight: 30,
                                      style: .borderedProminent,
                                      tint: .red) {
                     showResetAlert = true

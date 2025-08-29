@@ -10,19 +10,22 @@ import SwiftUI
 // Un bouton d'action uniformisé qui s'étire horizontalement, avec centrage et style cohérent.
 struct UniformActionButton<Content: View>: View {
     let minWidth: CGFloat
+    let minHeight: CGFloat
     let style: ButtonStyleConfiguration.Style
     let tint: Color?
     let action: () -> Void
     @ViewBuilder let content: () -> Content
 
     init(
-        minWidth: CGFloat = 300,
+        minWidth: CGFloat = 200,
+        minHeight: CGFloat = 100,
         style: ButtonStyleConfiguration.Style = .bordered,
         tint: Color? = nil,
         action: @escaping () -> Void,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.minWidth = minWidth
+        self.minHeight = minHeight
         self.style = style
         self.tint = tint
         self.action = action
@@ -36,6 +39,7 @@ struct UniformActionButton<Content: View>: View {
                 content()
                 Spacer(minLength: 0)
             }
+            .frame(minHeight: minHeight) // Assure la hauteur minimale
         }
         .uniformButton(minWidth: minWidth, fillContainer: true, style: style)
         .frame(maxWidth: .infinity)
@@ -48,6 +52,7 @@ struct UniformLabeledButton: View {
     let title: String
     let systemImage: String?
     let minWidth: CGFloat
+    let minHeight: CGFloat
     let style: ButtonStyleConfiguration.Style
     let tint: Color?
     let action: () -> Void
@@ -56,6 +61,7 @@ struct UniformLabeledButton: View {
         _ title: String,
         systemImage: String? = nil,
         minWidth: CGFloat = 300,
+        minHeight: CGFloat = 44, // hauteur par défaut plus “bouton”
         style: ButtonStyleConfiguration.Style = .bordered,
         tint: Color? = nil,
         action: @escaping () -> Void
@@ -63,13 +69,14 @@ struct UniformLabeledButton: View {
         self.title = title
         self.systemImage = systemImage
         self.minWidth = minWidth
+        self.minHeight = minHeight
         self.style = style
         self.tint = tint
         self.action = action
     }
 
     var body: some View {
-        UniformActionButton(minWidth: minWidth, style: style, tint: tint, action: action) {
+        UniformActionButton(minWidth: minWidth, minHeight: minHeight, style: style, tint: tint, action: action) {
             HStack(spacing: 8) {
                 if let systemImage {
                     Image(systemName: systemImage)

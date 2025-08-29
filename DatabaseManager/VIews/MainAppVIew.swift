@@ -146,73 +146,64 @@ struct PersonListView: View {
                 
             }
             HStack {
-                Button(action: {
+                // Remplacement par UniformLabeledButton
+                UniformLabeledButton(
+                    "Add",
+                    systemImage: "plus",
+                    minWidth: 100,
+                    style: .borderedProminent,
+                    tint: .blue
+                ) {
                     isAddDialogPresented = true
                     isModeCreate = true
-                }) {
-                    Label("Add", systemImage: "plus")
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
                 }
-                Button(action: {
+                UniformLabeledButton(
+                    "Edit",
+                    systemImage: "pencil",
+                    minWidth: 100,
+                    style: .borderedProminent,
+                    tint: .green
+                ) {
                     isEditDialogPresented = true
                     isModeCreate = false
-                }) {
-                    Label("Edit", systemImage: "pencil")
-                        .padding()
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
                 }
                 .disabled(selectedItem == nil)
-                
-                Button(action: {
+
+                UniformLabeledButton(
+                    "Delete",
+                    systemImage: "trash",
+                    minWidth: 100,
+                    style: .borderedProminent,
+                    tint: .red
+                ) {
                     delete()
-                }) {
-                    Label("Delete", systemImage: "trash")
-                        .frame(minWidth: 100) // Largeur minimale utile
-                        .padding()
-                        .background(Color.red)
-//                        .background(selectedItem == nil ? Color.gray : Color.red)
-//                        .opacity(selectedItem == nil ? 0.6 : 1)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
                 }
-//                .buttonStyle(.plain)
                 .disabled(selectedItem == nil)
-                
-                Button(action: {
+
+                UniformLabeledButton(
+                    "Undo",
+                    systemImage: "arrow.uturn.backward",
+                    minWidth: 100,
+                    style: .borderedProminent,
+                    tint: .gray
+                ) {
                     if let manager = undoManager, manager.canUndo {
                         manager.undo()
                         people = PersonManager.shared.getAllData()
                     }
-                }) {
-                    Label("Undo", systemImage: "arrow.uturn.backward")
-                        .frame(minWidth: 100) // Largeur minimale utile
-                        .padding()
-                        .background(canUndo == false ? Color.gray : Color.green)
-                        .opacity(canUndo == false  ? 0.6 : 1)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
                 }
-                .buttonStyle(.plain)
-                Button(action: {
+                UniformLabeledButton(
+                    "Redo",
+                    systemImage: "arrow.uturn.forward",
+                    minWidth: 100,
+                    style: .borderedProminent,
+                    tint: .gray
+                ) {
                     if let manager = undoManager, manager.canRedo {
                         manager.redo()
                         people = PersonManager.shared.getAllData()
                     }
-                }) {
-                    Label("Redo", systemImage: "arrow.uturn.forward")
-                        .frame(minWidth: 100) // Largeur minimale utile
-                        .padding()
-                        .background( canRedo == false ? Color.gray : Color.orange)
-                        .opacity( canRedo  == false ? 0.6 : 1)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
                 }
-                .buttonStyle(.plain)
             }
         }
         .toolbar {
@@ -277,4 +268,3 @@ struct PersonListView: View {
         }
     }
 }
-
