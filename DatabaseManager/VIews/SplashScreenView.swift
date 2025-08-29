@@ -21,8 +21,7 @@ private struct LeftPanelView: View {
     @State private var showCopySuccessAlert = false
 
     var body: some View {
-        VStack(spacing: 20)
-        {
+        VStack(spacing: 20) {
             Spacer()
             
             Image(systemName: "hammer.fill")
@@ -39,20 +38,23 @@ private struct LeftPanelView: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
             
+            Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"))")
+                .foregroundColor(.secondary)
+            
             // Actions principales
             VStack(spacing: 10) {
-                Button(action: {
+                // 1
+                UniformLabeledButton("Create a new file",
+                                     systemImage: "plus.circle.fill",
+                                     minWidth: 300,
+                                     style: .borderedProminent) {
                     showSavePanel()
-                }) {
-                    HStack {
-                        Image(systemName: "plus.circle.fill")
-                        Text("Create a new file")
-                    }
                 }
-//                .buttonStyle(.borderedProminent)
-                .uniformButton()
 
-                Button("Open existing document...") {
+                // 2
+                UniformLabeledButton("Open existing document...",
+                                     minWidth: 300,
+                                     style: .borderedProminent) {
                     let panel = NSOpenPanel()
                     panel.canChooseFiles = true
                     panel.canChooseDirectories = false
@@ -60,22 +62,24 @@ private struct LeftPanelView: View {
                     panel.allowedContentTypes = [.sqlite, .store]
                     if panel.runModal() == .OK, let url = panel.url {
                         containerManager.openDatabase(at: url)
-
-//                        openHandler(url)
-//                        recentManager.addProject(with: url)
-//                        appState.isProjectOpen = true
                     }
                 }
 
-                Button("Open sample document Project...") {
+                // 3
+                UniformLabeledButton("Open sample document Project...",
+                                     minWidth: 300,
+                                     style: .borderedProminent) {
                     preloadDBData()
                 }
 
 #if DEBUG
-                Button("Reset preferences…") {
+                // 4
+                UniformLabeledButton("Reset preferences…",
+                                     minWidth: 300,
+                                     style: .borderedProminent,
+                                     tint: .red) {
                     showResetAlert = true
                 }
-                .foregroundColor(.red)
                 .alert("Confirm reset?", isPresented: $showResetAlert) {
                     Button("Cancel", role: .cancel) {}
                     Button("Reset", role: .destructive) {
@@ -89,12 +93,12 @@ private struct LeftPanelView: View {
                 }
 #endif
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.horizontal, 16)
             .background(Color(NSColor.windowBackgroundColor))
             
             Spacer()
         }
-        .frame(width: 300)
+        .frame(width: 332) // 300 utile + 2*16 padding
     }
     private func showSavePanel() {
         let panel = NSSavePanel()
@@ -226,4 +230,3 @@ struct SplashScreenView: View {
     }
 
 }
-

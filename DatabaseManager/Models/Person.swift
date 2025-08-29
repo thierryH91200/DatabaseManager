@@ -82,7 +82,7 @@ final class DataContext {
     @Published var persons = [Person]()
 
     var context: ModelContext?
-    var undoManager: UndoManager?
+    var undoManager: UndoManager? = UndoManager()
 
     init() {}
 }

@@ -17,6 +17,10 @@ struct DatabaseManagerApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(containerManager)
+//                .modelContainer(for: Person.self) { config, context in
+//                    context.undoManager = UndoManager()   // ⚡ Obligatoire
+//                }
+
                 .frame(minWidth: 900, minHeight: 600)
         }
         .commands {
@@ -31,6 +35,18 @@ struct DatabaseManagerApp: App {
                 }
                 .keyboardShortcut("o", modifiers: [.command, .shift])
             }
+            CommandGroup(replacing: .undoRedo) {
+                Button("Undo") {
+                    DataContext.shared.undoManager?.undo()
+                }
+                .keyboardShortcut("z")
+                .disabled(!(DataContext.shared.undoManager?.canUndo ?? false))
+                Button("Redo") {
+                    DataContext.shared.undoManager?.redo()
+                }
+                .keyboardShortcut("Z", modifiers: [.command, .shift])
+                .disabled(!(DataContext.shared.undoManager?.canRedo ?? false))
+            }
         }
     }
 }
@@ -41,5 +57,4 @@ final class AppGlobals {
     
     private init() {}
 }
-
 

@@ -12,12 +12,13 @@ import SwiftData
 // Vue pour la boîte de dialogue d'ajout
 struct PersonFormView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.undoManager) private var undoManager
+
     @Environment(\.dismiss) private var dismiss
     
     @Binding var isPresented: Bool
     @Binding var isModeCreate: Bool
     let person: Person?
-//    let url: URL?
     
     var onSave: (() -> Void)?   // callback
 
@@ -87,21 +88,23 @@ struct PersonFormView: View {
     }
     
     private func save() {
-//        guard let url = url else { return }
-        if isModeCreate { // Création
-
-            let newItem = PersonManager.shared.create(
-                name: name,
-                age: age
-            )
+        if isModeCreate {
+            let newItem = PersonManager.shared.create(name: name, age: age)
             modelContext.insert(newItem)
+            // Undo pour la création
+            undoManager?.registerUndo(withTarget: modelContext) { context in
+                context.delete(newItem)
+            }
+        } else if let existingItem = person {
+            let oldName = existingItem.name
+            let oldAge = existingItem.age
+            existingItem.name = name
+            existingItem.age = age
             try? modelContext.save()
-
-        } else { // Modification
-            if let existingItem = person {
-                existingItem.name = name
-                existingItem.age = age
-
+            // Undo pour la modification
+            undoManager?.registerUndo(withTarget: existingItem) { target in
+                target.name = oldName
+                target.age = oldAge
                 try? modelContext.save()
             }
         }

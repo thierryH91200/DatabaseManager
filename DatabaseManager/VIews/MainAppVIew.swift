@@ -238,6 +238,7 @@ struct PersonListView: View {
                 isModeCreate: $isModeCreate,
                 person: nil )
         }
+        
         .sheet(isPresented: $isEditDialogPresented,
                onDismiss: {
             people = PersonManager.shared.getAllData()})
@@ -255,6 +256,8 @@ struct PersonListView: View {
         if let id = selectedItem,
            let item = people.first(where: { $0.id == id }) {
             lastDeletedID = id
+            
+//            undoManager = DataContext.shared.undoManager
             
             PersonManager.shared.delete(entity: item, undoManager: undoManager)
             
