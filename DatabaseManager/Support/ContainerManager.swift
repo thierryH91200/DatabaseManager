@@ -20,6 +20,8 @@ class ContainerManager: ObservableObject {
     private let recentFilesKey = "RecentDatabases"
     private let maxRecentFiles = 10
     
+    let schema = AppGlobals.shared.schema
+
     init() {
         loadRecentFiles()
     }
@@ -60,11 +62,8 @@ class ContainerManager: ObservableObject {
         saveRecentFiles()
     }
     
-    
     // MARK: - Gestion des bases de données
     func createNewDatabase(at url: URL) {
-
-        let schema = AppGlobals.shared.schema
 
         do {
             // Nettoie l'URL et s'assurer qu'elle a l'extension .store
@@ -100,7 +99,7 @@ class ContainerManager: ObservableObject {
                 allowsSave: true
             )
             
-            let container = try ModelContainer(for: Person.self, configurations: config)
+            let container = try ModelContainer(for: schema, configurations: config)
             
             // Ajouter une personne d'exemple
             let context = container.mainContext
@@ -116,6 +115,7 @@ class ContainerManager: ObservableObject {
                 print("❌ Code SQLite: \(sqliteError.code)")
                 print("❌ Détails: \(sqliteError.userInfo)")
             }
+            
             // Ouvrir la base créée
             openDatabase(at: cleanURL)
             
@@ -130,10 +130,10 @@ class ContainerManager: ObservableObject {
     func openDatabase(at url: URL) {
         do {
             let config = ModelConfiguration(
-                schema: Schema([Person.self]),
+                schema: schema,
                 url: url
             )
-            currentContainer = try ModelContainer(for: Person.self, configurations: config)
+            currentContainer = try ModelContainer(for: schema, configurations: config)
             currentDatabaseURL = url
             currentDatabaseName = url.deletingPathExtension().lastPathComponent
             

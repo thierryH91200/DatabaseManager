@@ -12,19 +12,56 @@ import Combine
 import AppKit
 internal import UniformTypeIdentifiers
 
+
+// MARK: - Splash Screen
+struct SplashScreenView: View {
+    @EnvironmentObject var containerManager: ContainerManager
+    @State private var showingFilePicker = false
+    @State private var showingSavePanel = false
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            // Logo/Button
+            LeftPanelView()
+            
+            Divider()
+            
+            // Fichiers récents
+            RecentProjectsListView()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(NSColor.windowBackgroundColor))
+        .fileImporter(
+            isPresented: $showingFilePicker,
+            allowedContentTypes: [UTType(filenameExtension: "sqlite") ?? .data],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+            case .success(let urls):
+                if let url = urls.first {
+                    containerManager.openDatabase(at: url)
+                }
+            case .failure(let error):
+                print("Erreur sélection fichier: \(error)")
+            }
+        }
+    }
+    
+}
+
 private struct LeftPanelView: View {
     
     @EnvironmentObject var containerManager: ContainerManager
-
+    
     @State private var showingFilePicker = false
     @State private var showResetAlert = false
     @State private var showCopySuccessAlert = false
-
+    
     var body: some View {
         VStack(spacing: 20) {
             Spacer()
             
-            Image(systemName: "hammer.fill")
+            Image("iconDataManager")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
@@ -51,7 +88,7 @@ private struct LeftPanelView: View {
                                      style: .borderedProminent) {
                     showSavePanel()
                 }
-
+                
                 // 2
                 UniformLabeledButton("Open existing document...",
                                      minWidth: 300,
@@ -66,7 +103,7 @@ private struct LeftPanelView: View {
                         containerManager.openDatabase(at: url)
                     }
                 }
-
+                
                 // 3
                 UniformLabeledButton("Open sample document Project...",
                                      minWidth: 300,
@@ -74,7 +111,7 @@ private struct LeftPanelView: View {
                                      style: .borderedProminent) {
                     preloadDBData()
                 }
-
+                
 #if DEBUG
                 // 4
                 UniformLabeledButton("Reset preferences…",
@@ -84,17 +121,17 @@ private struct LeftPanelView: View {
                                      tint: .red) {
                     showResetAlert = true
                 }
-                .alert("Confirm reset?", isPresented: $showResetAlert) {
-                    Button("Cancel", role: .cancel) {}
-                    Button("Reset", role: .destructive) {
-                        if let appDomain = Bundle.main.bundleIdentifier {
-                            UserDefaults.standard.removePersistentDomain(forName: appDomain)
-                            UserDefaults.standard.synchronize()
-                        }
-                    }
-                } message: {
-                    Text(String(localized: "This operation will delete all application preferences. Are you sure you want to proceed?"))
-                }
+                                     .alert("Confirm reset?", isPresented: $showResetAlert) {
+                                         Button("Cancel", role: .cancel) {}
+                                         Button("Reset", role: .destructive) {
+                                             if let appDomain = Bundle.main.bundleIdentifier {
+                                                 UserDefaults.standard.removePersistentDomain(forName: appDomain)
+                                                 UserDefaults.standard.synchronize()
+                                             }
+                                         }
+                                     } message: {
+                                         Text(String(localized: "This operation will delete all application preferences. Are you sure you want to proceed?"))
+                                     }
 #endif
             }
             .padding(.horizontal, 16)
@@ -106,7 +143,7 @@ private struct LeftPanelView: View {
     }
     private func showSavePanel() {
         let panel = NSSavePanel()
-        panel.allowedContentTypes = [.sqlite, .store]
+        panel.allowedContentTypes = [.store, .sqlite]
         panel.nameFieldStringValue = "New Base"
         panel.canCreateDirectories = true
         panel.allowsOtherFileTypes = false
@@ -124,7 +161,7 @@ private struct LeftPanelView: View {
         let file = "SampleDataBaseManager.store"
         let documentsURL = URL.documentsDirectory
         let newDirectory = documentsURL.appendingPathComponent(folder)
-
+        
         do {
             if !FileManager.default.fileExists(atPath: newDirectory.path) {
                 try FileManager.default.createDirectory(at: newDirectory, withIntermediateDirectories: true)
@@ -135,7 +172,7 @@ private struct LeftPanelView: View {
         }
         
         let newDirectory1 = newDirectory.appendingPathComponent(folder)
-
+        
         do {
             if !FileManager.default.fileExists(atPath: newDirectory1.path) {
                 try FileManager.default.createDirectory(at: newDirectory1, withIntermediateDirectories: true)
@@ -144,15 +181,15 @@ private struct LeftPanelView: View {
             print("❌ Erreur création base : \(error)")
             return
         }
-
+        
         guard let sqlitePath = Bundle.main.path(forResource: "SampleWelcomeTo", ofType: "store") else {
             print("Fichier source introuvable dans le bundle")
             return
         }
-
+        
         let URL1 = URL(fileURLWithPath: sqlitePath)
         let storeURL = newDirectory1.appendingPathComponent(file)
-
+        
         // Supprime l'ancien fichier s'il existe déjà à destination
         if FileManager.default.fileExists(atPath: storeURL.path) {
             do {
@@ -161,7 +198,7 @@ private struct LeftPanelView: View {
                 print("Erreur lors de la suppression de l'ancien fichier : \(error)")
             }
         }
-
+        
         do {
             try FileManager.default.copyItem(at: URL1, to: storeURL)
             DispatchQueue.main.async {
@@ -175,15 +212,16 @@ private struct LeftPanelView: View {
 
 private struct RecentProjectsListView: View {
     @EnvironmentObject var containerManager: ContainerManager
-
+    
     var body: some View {
         // Fichiers récents
-        if !containerManager.recentFiles.isEmpty {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Recent files")
-                    .font(.headline)
-                    .padding(.horizontal)
-                
+        
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Recent files")
+                .font(.headline)
+                .padding(.horizontal)
+            
+            if !containerManager.recentFiles.isEmpty {
                 ScrollView {
                     LazyVStack(spacing: 5) {
                         ForEach(containerManager.recentFiles) { recentFile in
@@ -193,44 +231,7 @@ private struct RecentProjectsListView: View {
                 }
                 .frame(maxHeight: 200)
             }
-            .frame(width: 400)
         }
+        .frame(width: 400)
     }
-
-}
-
-// MARK: - Splash Screen
-struct SplashScreenView: View {
-    @EnvironmentObject var containerManager: ContainerManager
-    @State private var showingFilePicker = false
-    @State private var showingSavePanel = false
-    
-    var body: some View {
-       HStack(spacing: 0) {
-            // Logo/Button
-           LeftPanelView()
-           
-           Divider()
-
-            // Fichiers récents
-           RecentProjectsListView()
-       }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(NSColor.windowBackgroundColor))
-        .fileImporter(
-            isPresented: $showingFilePicker,
-            allowedContentTypes: [UTType(filenameExtension: "sqlite") ?? .data],
-            allowsMultipleSelection: false
-        ) { result in
-            switch result {
-            case .success(let urls):
-                if let url = urls.first {
-                    containerManager.openDatabase(at: url)
-                }
-            case .failure(let error):
-                print("Erreur sélection fichier: \(error)")
-            }
-        }
-    }
-
 }
