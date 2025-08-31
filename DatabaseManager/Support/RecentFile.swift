@@ -110,10 +110,10 @@ struct RecentFileRow: View {
     }
 }
 
-
 // MARK: - Sheet pour ajouter une personne
 struct AddPersonSheet: View {
     @Binding var name: String
+    @Binding var town: String
     @Binding var age: Int
     @Binding var isPresented: Bool
     let modelContext: ModelContext
@@ -125,7 +125,8 @@ struct AddPersonSheet: View {
             Form {
                 Section("Informations") {
                     TextField("Name", text: $name)
-                    
+                    TextField("Town", text: $town)
+
                     HStack {
                         Text("Age")
                         Spacer()
@@ -136,7 +137,7 @@ struct AddPersonSheet: View {
                 }
             }
             .navigationTitle("New person")
-//            .navigationBarTitleDisplayMode(.inline)
+
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
@@ -147,7 +148,7 @@ struct AddPersonSheet: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
-                        let person = Person(name: name, age: age)
+                        let person = Person(name: name, town: town, age: age)
                         modelContext.insert(person)
                         try? modelContext.save()
                         
@@ -164,6 +165,7 @@ struct AddPersonSheet: View {
     
     private func resetFields() {
         name = ""
+        town = ""
         age = 25
     }
 }

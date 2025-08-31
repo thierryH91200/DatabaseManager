@@ -103,6 +103,10 @@ struct PersonListView: View {
     @State private var isAddDialogPresented = false
     @State private var isEditDialogPresented = false
     @State private var isModeCreate = false
+    
+    // Fiche détail
+    @State private var showingDetail = false
+    @State private var detailPerson: Person?
 
     var manager : UndoManager? {
         UndoManager()
@@ -136,6 +140,7 @@ struct PersonListView: View {
             } else {
                 Table(people, selection: $selectedItem, sortOrder: $sortOrder, columns: {
                     TableColumn("Name", value: \.name)
+                    TableColumn("Town", value: \.town)
                     TableColumn("Age") { person in
                         Text("\(person.age)")
                     }
@@ -143,10 +148,18 @@ struct PersonListView: View {
                         Text("\(person.createdAt, style: .date)")
                     }
                 })
-                
+                .onChange(of: sortOrder) { _, newValue in
+                    // Optionnel: réappliquer l'ordre local si besoin
+                    // Ici, on refetch depuis SwiftData pour rester source-de-vérité
+                    people = PersonManager.shared.getAllData()
+                }
+                .gesture(
+                    TapGesture(count: 2).onEnded {
+                        openDetailForSelected()
+                    }
+                )
             }
             HStack {
-                // Remplacement par UniformLabeledButton
                 UniformLabeledButton(
                     "Add",
                     systemImage: "plus",
@@ -166,6 +179,27 @@ struct PersonListView: View {
                 ) {
                     isEditDialogPresented = true
                     isModeCreate = false
+                }
+                .disabled(selectedItem == nil)
+                
+                UniformLabeledButton(
+                    "Details",
+                    systemImage: "info.circle",
+                    minWidth: 100,
+                    style: .borderedProminent,
+                    tint: .orange
+                ) {
+                    // Résoudre l'ID sélectionné vers une Person complète, puis l’assigner
+                    if let id = selectedItem {
+                        if let person = modelContext.model(for: id) as? Person {
+                            detailPerson = person
+                            showingDetail = true
+                        } else if let person = people.first(where: { $0.id == id }) {
+                            // fallback via la liste en mémoire si nécessaire
+                            detailPerson = person
+                            showingDetail = true
+                        }
+                    }
                 }
                 .disabled(selectedItem == nil)
 
@@ -209,7 +243,6 @@ struct PersonListView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Add") {
-//                    showingAddPerson = true
                     isAddDialogPresented = true
                     isModeCreate = true
                 }
@@ -234,21 +267,39 @@ struct PersonListView: View {
                onDismiss: {
             people = PersonManager.shared.getAllData()})
         {
-            // Ne passe un Person que s'il est encore valide dans la liste courante
             let safePerson = people.first(where: { $0.id == selectedItem })
             PersonFormView(
                 isPresented: $isEditDialogPresented,
                 isModeCreate: $isModeCreate,
                 person: safePerson )
         }
+        
+        .sheet(isPresented: $showingDetail, onDismiss: {
+            // rafraîchir si des modifications ont eu lieu
+            people = PersonManager.shared.getAllData()
+        }) {
+            let id = selectedItem
+            let item = people.first(where: { $0.id == id })
+            if let person = item {
+                PersonDetailView(person: person)
+            } else {
+                Text("No selection")
+                    .padding()
+            }
+        }
+    }
+    
+    private func openDetailForSelected() {
+        guard let id = selectedItem,
+              let item = people.first(where: { $0.id == id }) else { return }
+        detailPerson = item
+        showingDetail = true
     }
     
     private func delete() {
         if let id = selectedItem,
            let item = people.first(where: { $0.id == id }) {
             lastDeletedID = id
-            
-//            undoManager = DataContext.shared.undoManager
             
             PersonManager.shared.delete(entity: item, undoManager: undoManager)
             

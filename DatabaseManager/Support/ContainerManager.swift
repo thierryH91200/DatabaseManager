@@ -100,10 +100,10 @@ class ContainerManager: ObservableObject {
             )
             
             let container = try ModelContainer(for: schema, configurations: config)
-            
-            // Ajouter une personne d'exemple
             let context = container.mainContext
-            let samplePerson = Person(name: "Exemple", age: 25)
+            
+            // Ajoute une personne
+            let samplePerson = Person(name: "Exemple", town: "Seoul", age: 25)
             context.insert(samplePerson)
             
             do {

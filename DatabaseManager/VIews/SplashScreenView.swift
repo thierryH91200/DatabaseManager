@@ -9,7 +9,6 @@
 import SwiftUI
 import SwiftData
 import Combine
-import AppKit
 internal import UniformTypeIdentifiers
 
 
@@ -91,6 +90,7 @@ private struct LeftPanelView: View {
                 
                 // 2
                 UniformLabeledButton("Open existing document...",
+                                     systemImage: "doc.badge.ellipsis",
                                      minWidth: 300,
                                      minHeight: 30,
                                      style: .borderedProminent) {
@@ -106,6 +106,7 @@ private struct LeftPanelView: View {
                 
                 // 3
                 UniformLabeledButton("Open sample document Project...",
+                                     systemImage: "wand.and.stars",
                                      minWidth: 300,
                                      minHeight: 30,
                                      style: .borderedProminent) {
@@ -115,6 +116,7 @@ private struct LeftPanelView: View {
 #if DEBUG
                 // 4
                 UniformLabeledButton("Reset preferences…",
+                                     systemImage: "gearshape.arrow.triangle.2.circlepath",
                                      minWidth: 300,
                                      minHeight: 30,
                                      style: .borderedProminent,

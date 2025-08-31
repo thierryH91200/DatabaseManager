@@ -23,6 +23,7 @@ struct PersonFormView: View {
     var onSave: (() -> Void)?   // callback
 
     @State private var name: String = ""
+    @State private var town: String = ""
     @State private var age: Int = 0
 
     var body: some View {
@@ -44,7 +45,12 @@ struct PersonFormView: View {
                     TextField("", text: $name)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
-                
+                HStack {
+                    Text("Town")
+                        .frame(width: 100, alignment: .leading)
+                    TextField("", text: $town)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                }
                 HStack {
                     Text("Age")
                         .frame(width: 100, alignment: .leading)
@@ -82,6 +88,7 @@ struct PersonFormView: View {
         .onAppear {
             if let person = person {
                 name = person.name
+                town = person.town
                 age = person.age
             }
         }
@@ -89,21 +96,25 @@ struct PersonFormView: View {
     
     private func save() {
         if isModeCreate {
-            let newItem = PersonManager.shared.create(name: name, age: age)
+            let newItem = PersonManager.shared.create(name: name, town: town, age: age)
             modelContext.insert(newItem)
+            
             // Undo pour la création
             undoManager?.registerUndo(withTarget: modelContext) { context in
                 context.delete(newItem)
             }
         } else if let existingItem = person {
             let oldName = existingItem.name
+            let oldTown = existingItem.town
             let oldAge = existingItem.age
             existingItem.name = name
+            existingItem.town = town
             existingItem.age = age
             try? modelContext.save()
             // Undo pour la modification
             undoManager?.registerUndo(withTarget: existingItem) { target in
                 target.name = oldName
+                target.town = oldTown
                 target.age = oldAge
                 try? modelContext.save()
             }
@@ -113,9 +124,10 @@ struct PersonFormView: View {
         dismiss()
     }
     
-    private func updatePerson(_ item: Person) {
-        item.name = name
-        item.age = age
-    }
+//    private func updatePerson(_ item: Person) {
+//        item.name = name
+//        item.town = town
+//        item.age = age
+//    }
 }
 

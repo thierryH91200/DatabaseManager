@@ -61,7 +61,7 @@ struct UniformLabeledButton: View {
         _ title: String,
         systemImage: String? = nil,
         minWidth: CGFloat = 300,
-        minHeight: CGFloat = 44, // hauteur par défaut plus “bouton”
+        minHeight: CGFloat = 44,
         style: ButtonStyleConfiguration.Style = .bordered,
         tint: Color? = nil,
         action: @escaping () -> Void

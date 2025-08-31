@@ -13,11 +13,13 @@ import Combine
 @Model
 class Person {
     var name: String
+    var town: String
     var age: Int
     var createdAt: Date
     
-    init(name: String, age: Int) {
+    init(name: String, town: String, age: Int) {
         self.name = name
+        self.town = town
         self.age = age
         self.createdAt = Date()
     }
@@ -37,8 +39,8 @@ final class PersonManager: ObservableObject {
     }
     
     @discardableResult
-    func create(name: String, age: Int) -> Person {
-        let person = Person(name: name, age: age)
+    func create(name: String, town: String, age: Int) -> Person {
+        let person = Person(name: name, town: town, age: age)
         modelContext?.insert(person)
 
         entitiesPerson.append(person)
