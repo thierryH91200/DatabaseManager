@@ -26,10 +26,10 @@ struct MainAppView: View {
                     Spacer()
                     
                     Menu {
-                        Button("Close") {
+                        Button(String(localized: "Close",table: "MainApp")) {
                             containerManager.closeCurrentDatabase()
                         }
-                        Button("Show in Finder") {
+                        Button(String(localized: "Show in Finder",table: "MainApp")) {
                             if let url = containerManager.currentDatabaseURL {
                                 NSWorkspace.shared.activateFileViewerSelecting([url])
                             }
@@ -43,7 +43,7 @@ struct MainAppView: View {
                 
                 Divider()
                 
-                Text("Contents of the database")
+                Text(String(localized: "Contents of the database",table: "MainApp"))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .padding()
@@ -57,9 +57,9 @@ struct MainAppView: View {
             if let container = containerManager.currentContainer {
                 PersonListView()
                     .modelContainer(container)
-                    .navigationTitle("Persons")
+                    .navigationTitle(String(localized: "Persons"))
             } else {
-                Text("No database is open")
+                Text(String(localized: "No database is open",table: "MainApp"))
                     .font(.title2)
                     .foregroundColor(.secondary)
             }
@@ -69,14 +69,14 @@ struct MainAppView: View {
                 Button {
                     containerManager.closeCurrentDatabase()
                 } label: {
-                    Label("Home", systemImage: "house")
+                    Label(String(localized: "Home",table: "MainApp"), systemImage: "house")
                 }
             }
             ToolbarItem(placement: .automatic) {
                 Button {
                     isDarkMode.toggle()
                 } label: {
-                    Label(isDarkMode ? "Light mode" : "Dark mode",
+                    Label(isDarkMode ? String(localized: "Light mode",table: "MainApp") : String(localized: "Dark mode",table: "MainApp"),
                           systemImage: isDarkMode ? "sun.max" : "moon")
                 }
             }
@@ -126,11 +126,11 @@ struct PersonListView: View {
                         .font(.system(size: 50))
                         .foregroundColor(.secondary)
                     
-                    Text("No person")
+                    Text(String(localized: "No person",table: "MainApp"))
                         .font(.title2)
                         .foregroundColor(.secondary)
                     
-                    Button("Add the first person") {
+                    Button(String(localized: "Add the first person",table: "MainApp")) {
                         isAddDialogPresented = true
                         isModeCreate = true
                     }
@@ -139,12 +139,12 @@ struct PersonListView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 Table(people, selection: $selectedItem, sortOrder: $sortOrder, columns: {
-                    TableColumn("Name", value: \.name)
-                    TableColumn("Town", value: \.town)
-                    TableColumn("Age") { person in
+                    TableColumn(String(localized: "Name",table: "MainApp"), value: \.name)
+                    TableColumn(String(localized: "Town",table: "MainApp"), value: \.town)
+                    TableColumn(String(localized: "Age",table: "MainApp")) { person in
                         Text("\(person.age)")
                     }
-                    TableColumn("CreateAt") { person in
+                    TableColumn(String(localized: "CreateAt",table: "MainApp")) { person in
                         Text("\(person.createdAt, style: .date)")
                     }
                 })
@@ -161,7 +161,7 @@ struct PersonListView: View {
             }
             HStack {
                 UniformLabeledButton(
-                    "Add",
+                    String(localized: "Add",table: "MainApp"),
                     systemImage: "plus",
                     minWidth: 100,
                     style: .borderedProminent,
@@ -171,7 +171,7 @@ struct PersonListView: View {
                     isModeCreate = true
                 }
                 UniformLabeledButton(
-                    "Edit",
+                    String(localized: "Edit",table: "MainApp"),
                     systemImage: "pencil",
                     minWidth: 100,
                     style: .borderedProminent,
@@ -183,7 +183,7 @@ struct PersonListView: View {
                 .disabled(selectedItem == nil)
                 
                 UniformLabeledButton(
-                    "Details",
+                    String(localized: "Details",table: "MainApp"),
                     systemImage: "info.circle",
                     minWidth: 100,
                     style: .borderedProminent,
@@ -204,7 +204,7 @@ struct PersonListView: View {
                 .disabled(selectedItem == nil)
 
                 UniformLabeledButton(
-                    "Delete",
+                    String(localized: "Delete",table: "MainApp"),
                     systemImage: "trash",
                     minWidth: 100,
                     style: .borderedProminent,
@@ -215,7 +215,7 @@ struct PersonListView: View {
                 .disabled(selectedItem == nil)
 
                 UniformLabeledButton(
-                    "Undo",
+                    String(localized: "Undo",table: "MainApp"),
                     systemImage: "arrow.uturn.backward",
                     minWidth: 100,
                     style: .borderedProminent,
@@ -227,7 +227,7 @@ struct PersonListView: View {
                     }
                 }
                 UniformLabeledButton(
-                    "Redo",
+                    String(localized: "Redo",table: "MainApp"),
                     systemImage: "arrow.uturn.forward",
                     minWidth: 100,
                     style: .borderedProminent,
@@ -242,7 +242,7 @@ struct PersonListView: View {
         }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Add") {
+                Button(String(localized: "Add",table: "MainApp")) {
                     isAddDialogPresented = true
                     isModeCreate = true
                 }
@@ -283,7 +283,7 @@ struct PersonListView: View {
             if let person = item {
                 PersonDetailView(person: person)
             } else {
-                Text("No selection")
+                Text(String(localized: "No selection",table: "MainApp"))
                     .padding()
             }
         }
@@ -319,3 +319,4 @@ struct PersonListView: View {
         }
     }
 }
+

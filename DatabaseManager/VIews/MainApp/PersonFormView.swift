@@ -35,24 +35,27 @@ struct PersonFormView: View {
             
             // Contenu principal
             VStack(spacing: 20) {
-                Text(isModeCreate ? "Add Person" : "Edit Person")
+                Text(isModeCreate ? String(localized: "Add Person") : String(localized: "Edit Person"))
                     .font(.headline)
                     .padding(.top, 10) // Ajoute un peu d'espace après le bandeau
                 
                 HStack {
-                    Text("Name")
+                    Text(String(localized: "Name",table:"MainApp"))
+                        .fontWeight(.medium)
                         .frame(width: 100, alignment: .leading)
                     TextField("", text: $name)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
                 HStack {
-                    Text("Town")
+                    Text(String(localized: "Town",table:"MainApp"))
+                        .fontWeight(.medium)
                         .frame(width: 100, alignment: .leading)
                     TextField("", text: $town)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
                 HStack {
-                    Text("Age")
+                    Text(String(localized: "Age",table:"MainApp"))
+                        .fontWeight(.medium)
                         .frame(width: 100, alignment: .leading)
                     TextField("", value: $age, formatter: NumberFormatter())
                         .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -60,16 +63,16 @@ struct PersonFormView: View {
                 Spacer()
             }
             .padding()
-            .navigationTitle(person == nil ? "New Person" : "Edit Person")
+            .navigationTitle(person == nil ? String(localized: "New Person") : String(localized: "Edit Person",table:"MainApp"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(String(localized: "Cancel",table:"MainApp")) {
                         isPresented = false
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button(String(localized: "Save",table:"MainApp")) {
                         isPresented = false
                         save()
                         dismiss()
@@ -123,11 +126,5 @@ struct PersonFormView: View {
         isPresented = false
         dismiss()
     }
-    
-//    private func updatePerson(_ item: Person) {
-//        item.name = name
-//        item.town = town
-//        item.age = age
-//    }
 }
 

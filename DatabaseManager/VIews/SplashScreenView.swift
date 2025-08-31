@@ -66,7 +66,7 @@ private struct LeftPanelView: View {
                 .frame(width: 100, height: 100)
                 .foregroundColor(.accentColor)
             
-            Text("Database Manager")
+            Text(String(localized: "Database Manager"))
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
@@ -74,13 +74,15 @@ private struct LeftPanelView: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
             
+            // Use interpolation so LocalizedStringResource can handle formatting
+
             Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"))")
-                .foregroundColor(.secondary)
+            .foregroundColor(.secondary)
             
             // Actions principales
             VStack(spacing: 10) {
                 // 1
-                UniformLabeledButton("Create a new file",
+                UniformLabeledButton(String(localized: "Create a new file"),
                                      systemImage: "plus.circle.fill",
                                      minWidth: 300,
                                      minHeight: 30,
@@ -89,7 +91,7 @@ private struct LeftPanelView: View {
                 }
                 
                 // 2
-                UniformLabeledButton("Open existing document...",
+                UniformLabeledButton(String(localized: "Open existing document..."),
                                      systemImage: "doc.badge.ellipsis",
                                      minWidth: 300,
                                      minHeight: 30,
@@ -105,7 +107,7 @@ private struct LeftPanelView: View {
                 }
                 
                 // 3
-                UniformLabeledButton("Open sample document Project...",
+                UniformLabeledButton(String(localized: "Open sample document Project..."),
                                      systemImage: "wand.and.stars",
                                      minWidth: 300,
                                      minHeight: 30,
@@ -115,7 +117,7 @@ private struct LeftPanelView: View {
                 
 #if DEBUG
                 // 4
-                UniformLabeledButton("Reset preferences…",
+                UniformLabeledButton(String(localized: "Reset preferences…"),
                                      systemImage: "gearshape.arrow.triangle.2.circlepath",
                                      minWidth: 300,
                                      minHeight: 30,
@@ -219,7 +221,7 @@ private struct RecentProjectsListView: View {
         // Fichiers récents
         
         VStack(alignment: .leading, spacing: 10) {
-            Text("Recent files")
+            Text(String(localized: "Recent files"))
                 .font(.headline)
                 .padding(.horizontal)
             

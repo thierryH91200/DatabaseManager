@@ -33,22 +33,22 @@ struct PersonDetailView: View {
             
             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
                 GridRow {
-                    Text("Name:")
+                    Text(String(localized:"Name:",table: "MainApp"))
                         .fontWeight(.medium)
                     Text(person.name)
                 }
                 GridRow {
-                    Text("Town:")
+                    Text(String(localized:"Town:",table: "MainApp"))
                         .fontWeight(.medium)
                     Text(person.town)
                 }
                 GridRow {
-                    Text("Age:")
+                    Text(String(localized:"Age:",table: "MainApp"))
                         .fontWeight(.medium)
                     Text("\(person.age)")
                 }
                 GridRow {
-                    Text("Created at:")
+                    Text(String(localized:"Ctrated at:",table: "MainApp"))
                         .fontWeight(.medium)
                     Text(person.createdAt, style: .date)
                 }
@@ -58,7 +58,7 @@ struct PersonDetailView: View {
             
             HStack {
                 UniformLabeledButton(
-                    "Edit",
+                    String(localized:"Edit",table: "MainApp"),
                     systemImage: "pencil",
                     minWidth: 120,
                     style: .borderedProminent,
@@ -68,7 +68,7 @@ struct PersonDetailView: View {
                 }
                 
                 UniformLabeledButton(
-                    "Delete",
+                    String(localized:"Delete",table: "MainApp"),
                     systemImage: "trash",
                     minWidth: 120,
                     style: .borderedProminent,
@@ -80,7 +80,7 @@ struct PersonDetailView: View {
                 Spacer()
                 
                 UniformLabeledButton(
-                    "Close",
+                    String(localized:"Close",table: "MainApp"),
                     systemImage: "xmark.circle",
                     minWidth: 120,
                     style: .borderedProminent,
@@ -112,7 +112,7 @@ struct PersonDetailView: View {
             return
         }
         undoManager.beginUndoGrouping()
-        undoManager.setActionName("Delete Person")
+        undoManager.setActionName(String(localized: "Delete Person"))
         modelContext.delete(person)
         undoManager.endUndoGrouping()
         try? modelContext.save()

@@ -25,23 +25,23 @@ struct DatabaseManagerApp: App {
         }
         .commands {
             CommandGroup(after: .newItem) {
-                Button("Create New Document...") {
+                Button(String(localized: "Create New Document...")) {
                     // Action pour nouveau fichier
                 }
                 .keyboardShortcut("n")
                 
-                Button("Open existing document...") {
+                Button(String(localized: "Open existing document...")) {
                     // Action pour fichiers récents
                 }
                 .keyboardShortcut("o", modifiers: [.command, .shift])
             }
             CommandGroup(replacing: .undoRedo) {
-                Button("Undo") {
+                Button(String(localized: "Undo")) {
                     DataContext.shared.undoManager?.undo()
                 }
                 .keyboardShortcut("z")
                 .disabled(!(DataContext.shared.undoManager?.canUndo ?? false))
-                Button("Redo") {
+                Button(String(localized: "Redo")) {
                     DataContext.shared.undoManager?.redo()
                 }
                 .keyboardShortcut("Z", modifiers: [.command, .shift])

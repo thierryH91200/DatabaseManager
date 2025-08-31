@@ -92,18 +92,18 @@ struct RecentFileRow: View {
         }
         .contextMenu {
             if FileManager.default.fileExists(atPath: recentFile.url.path) {
-                Button("Open") {
+                Button(String(localized: "Open")) {
                     containerManager.openDatabase(at: recentFile.url)
                 }
                 
-                Button("Show in Finder") {
+                Button(String(localized: "Show in Finder")) {
                     NSWorkspace.shared.activateFileViewerSelecting([recentFile.url])
                 }
                 
                 Divider()
             }
             
-            Button("Remove from list", role: .destructive) {
+            Button(String(localized: "Remove from list"), role: .destructive) {
                 containerManager.removeFromRecentFiles(url: recentFile.url)
             }
         }
@@ -123,31 +123,31 @@ struct AddPersonSheet: View {
     var body: some View {
         NavigationView {
             Form {
-                Section("Informations") {
-                    TextField("Name", text: $name)
-                    TextField("Town", text: $town)
+                Section(String(localized: "Informations")) {
+                    TextField(String(localized: "Name"), text: $name)
+                    TextField(String(localized: "Town"), text: $town)
 
                     HStack {
-                        Text("Age")
+                        Text(String(localized: "Age"))
                         Spacer()
-                        TextField("Age", value: $age, format: .number)
+                        TextField(String(localized: "Age"), value: $age, format: .number)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: 80)
                     }
                 }
             }
-            .navigationTitle("New person")
+            .navigationTitle(String(localized: "New person"))
 
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(String(localized: "Cancel")) {
                         isPresented = false
                         resetFields()
                     }
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
+                    Button(String(localized: "Add")) {
                         let person = Person(name: name, town: town, age: age)
                         modelContext.insert(person)
                         try? modelContext.save()
@@ -169,3 +169,4 @@ struct AddPersonSheet: View {
         age = 25
     }
 }
+
