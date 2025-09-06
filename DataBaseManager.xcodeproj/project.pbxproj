@@ -17,6 +17,7 @@
 		03450C6C2E5C8E1000305096 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		03450C6E2E5C918F00305096 /* README_en.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README_en.md; sourceTree = "<group>"; };
 		035D4FC22E5B2D82002F62C3 /* DataBaseManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataBaseManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		03DC95542E6C4498000C6795 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = DataBaseManager/Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -46,6 +47,7 @@
 		035D4FB92E5B2D82002F62C3 = {
 			isa = PBXGroup;
 			children = (
+				03DC95542E6C4498000C6795 /* Info.plist */,
 				035D52D62E5C3AC1002F62C3 /* Doc */,
 				03450C6C2E5C8E1000305096 /* README.md */,
 				03450C6E2E5C918F00305096 /* README_en.md */,
@@ -291,6 +293,7 @@
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DataBaseManager/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -335,6 +338,7 @@
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DataBaseManager/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

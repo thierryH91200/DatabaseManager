@@ -55,13 +55,19 @@ struct DatabaseManagerApp: App {
     // MARK: - Helpers pour les panneaux système
     private func presentSavePanelAndCreate() {
         let panel = NSSavePanel()
-        panel.allowedContentTypes = [.store, .sqlite]
+        // N’autoriser que .store
+        panel.allowedContentTypes = [.store]
         panel.nameFieldStringValue = "New Base"
         panel.canCreateDirectories = true
         panel.allowsOtherFileTypes = false
         
         panel.begin { response in
-            if response == .OK, let url = panel.url {
+            if response == .OK, var url = panel.url {
+                // Sécurité supplémentaire: forcer l’extension .store si l’utilisateur a retiré l’extension
+                if url.pathExtension.lowercased() != "store" {
+                    url.deletePathExtension()
+                    url.appendPathExtension("store")
+                }
                 containerManager.createNewDatabase(at: url)
             }
         }
@@ -72,7 +78,8 @@ struct DatabaseManagerApp: App {
         panel.canChooseFiles = true
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = false
-        panel.allowedContentTypes = [.store, .sqlite]
+        // N’autoriser que .store
+        panel.allowedContentTypes = [.store]
         panel.begin { response in
             if response == .OK, let url = panel.url {
                 containerManager.openDatabase(at: url)
@@ -87,13 +94,3 @@ final class AppGlobals {
     
     private init() {}
 }
-
-//    @discardableResult
-//    func update(name: String? = nil, town: String? = nil, age: Int? = nil) -> Person {
-//        let person = Person(name: name, town: town, age: age)
-//        modelContext?.insert(person)
-//
-//        entitiesPerson.append(person)
-//        modelContext?.insert(person)
-//        return person
-//    }

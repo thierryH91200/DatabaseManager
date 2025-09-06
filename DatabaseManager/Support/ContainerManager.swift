@@ -8,7 +8,6 @@
 import SwiftUI
 import SwiftData
 import Combine
-internal import UniformTypeIdentifiers
 
 // MARK: - Container Manager avec gestion fichiers récents
 class ContainerManager: ObservableObject {
@@ -78,31 +77,27 @@ class ContainerManager: ObservableObject {
         let schema = AppGlobals.shared.schema
         
         do {
-            // 1) Créer le répertoire à l'URL passée en paramètre
-            
             // Normaliser l’URL: nom de fichier nettoyé + extension .store
-            var cleanURL = url
             let baseName = url.deletingPathExtension().lastPathComponent
             let sanitizedFileName = sanitizeFileName(baseName)
-            cleanURL = cleanURL.deletingLastPathComponent().appendingPathComponent(sanitizedFileName)
+            
+            // Dossier parent choisi par l'utilisateur dans le NSSavePanel
+            let baseDirectory = url.deletingLastPathComponent()
+            
+            // Créer un sous-dossier portant le nom "sanitizedFileName"
+            let parentDir = baseDirectory.appendingPathComponent(sanitizedFileName, isDirectory: true)
+            if !FileManager.default.fileExists(atPath: parentDir.path) {
+                try FileManager.default.createDirectory(at: parentDir, withIntermediateDirectories: true, attributes: nil)
+            }
+            
+            // Construire l’URL finale: <parentDir>/<sanitizedFileName>.store
+            var cleanURL = parentDir.appendingPathComponent(sanitizedFileName)
             if cleanURL.pathExtension != "store" {
                 cleanURL = cleanURL.appendingPathExtension("store")
             }
             
             print("🔧 Création de la base à: \(cleanURL.path)")
             
-            // S’assurer que le dossier parent existe
-            let parentDir = cleanURL.deletingLastPathComponent()
-            if !FileManager.default.fileExists(atPath: parentDir.path) {
-                try FileManager.default.createDirectory(at: parentDir, withIntermediateDirectories: true, attributes: nil)
-            }
-            
-            cleanURL = parentDir.appendingPathComponent(sanitizedFileName)
-            cleanURL = cleanURL.appendingPathComponent(sanitizedFileName)
-            if cleanURL.pathExtension != "store" {
-                cleanURL = cleanURL.appendingPathExtension("store")
-            }
-
             // Configurer le container SwiftData
             let config = ModelConfiguration(
                 schema: schema,

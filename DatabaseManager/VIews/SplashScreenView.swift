@@ -32,7 +32,8 @@ struct SplashScreenView: View {
         .background(Color(NSColor.windowBackgroundColor))
         .fileImporter(
             isPresented: $showingFilePicker,
-            allowedContentTypes: [UTType(filenameExtension: "sqlite") ?? .data],
+            // N’autoriser que .store
+            allowedContentTypes: [.store],
             allowsMultipleSelection: false
         ) { result in
             switch result {
@@ -100,7 +101,8 @@ private struct LeftPanelView: View {
                     panel.canChooseFiles = true
                     panel.canChooseDirectories = false
                     panel.allowsMultipleSelection = false
-                    panel.allowedContentTypes = [.sqlite, .store]
+                    // N’autoriser que .store
+                    panel.allowedContentTypes = [.store]
                     if panel.runModal() == .OK, let url = panel.url {
                         containerManager.openDatabase(at: url)
                     }
@@ -147,13 +149,19 @@ private struct LeftPanelView: View {
     }
     private func showSavePanel() {
         let panel = NSSavePanel()
-        panel.allowedContentTypes = [.store, .sqlite]
+        // N’autoriser que .store
+        panel.allowedContentTypes = [.store]
         panel.nameFieldStringValue = "New Base"
         panel.canCreateDirectories = true
         panel.allowsOtherFileTypes = false
         
         panel.begin { response in
-            if response == .OK, let url = panel.url {
+            if response == .OK, var url = panel.url {
+                // Sécurité: forcer .store
+                if url.pathExtension.lowercased() != "store" {
+                    url.deletePathExtension()
+                    url.appendPathExtension("store")
+                }
                 print("URL sélectionnée: \(url)")
                 containerManager.createNewDatabase(at: url)
             }
