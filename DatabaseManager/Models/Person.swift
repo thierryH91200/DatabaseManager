@@ -12,6 +12,7 @@ import Combine
 // MARK: - Modèle de données
 @Model
 class Person {
+    
     var name: String
     var town: String
     var age: Int
@@ -25,6 +26,7 @@ class Person {
     }
 }
 
+// CRUD
 final class PersonManager: ObservableObject {
     
     static let shared = PersonManager()
@@ -37,17 +39,16 @@ final class PersonManager: ObservableObject {
     
     init () {
     }
-    
+        
     @discardableResult
     func create(name: String, town: String, age: Int) -> Person {
         let person = Person(name: name, town: town, age: age)
+        
         modelContext?.insert(person)
-
         entitiesPerson.append(person)
-        modelContext?.insert(person)
         return person
     }
-    
+
     func getAllData() -> [Person] {
         
         entitiesPerson.removeAll()
@@ -81,8 +82,8 @@ final class PersonManager: ObservableObject {
 
 final class DataContext {
     static let shared = DataContext()
+    
     @Published var persons = [Person]()
-
     var context: ModelContext?
     var undoManager: UndoManager? = UndoManager()
 

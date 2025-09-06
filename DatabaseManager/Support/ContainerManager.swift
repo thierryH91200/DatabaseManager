@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import Combine
+internal import UniformTypeIdentifiers
 
 // MARK: - Container Manager avec gestion fichiers récents
 class ContainerManager: ObservableObject {
@@ -62,37 +63,47 @@ class ContainerManager: ObservableObject {
         saveRecentFiles()
     }
     
-    // MARK: - Gestion des bases de données
+    // MARK: - Helpers
+    private func sanitizeFileName(_ name: String) -> String {
+        name
+            .replacingOccurrences(of: " ", with: "_")
+            .replacingOccurrences(of: "'", with: "")
+            .replacingOccurrences(of: "\"", with: "")
+    }
+    
+    // MARK: - Gestion des bases de données (API principale)
+    // Crée une base au chemin donné (p.ex. choisi via NSSavePanel)
+    @MainActor
     func createNewDatabase(at url: URL) {
-
+        let schema = AppGlobals.shared.schema
+        
         do {
-            // Nettoie l'URL et s'assurer qu'elle a l'extension .store
+            // 1) Créer le répertoire à l'URL passée en paramètre
+            
+            // Normaliser l’URL: nom de fichier nettoyé + extension .store
             var cleanURL = url
+            let baseName = url.deletingPathExtension().lastPathComponent
+            let sanitizedFileName = sanitizeFileName(baseName)
+            cleanURL = cleanURL.deletingLastPathComponent().appendingPathComponent(sanitizedFileName)
             if cleanURL.pathExtension != "store" {
                 cleanURL = cleanURL.appendingPathExtension("store")
             }
             
-            // Supprime les espaces et caractères problématiques du nom
-            let fileName = cleanURL.lastPathComponent
-                .replacingOccurrences(of: " ", with: "_")
-                .replacingOccurrences(of: "'", with: "")
-                .replacingOccurrences(of: "\"", with: "")
-            
-            cleanURL = cleanURL.deletingLastPathComponent().appendingPathComponent(fileName)
-            
             print("🔧 Création de la base à: \(cleanURL.path)")
             
-            // S'assurer que le dossier parent existe
+            // S’assurer que le dossier parent existe
             let parentDir = cleanURL.deletingLastPathComponent()
             if !FileManager.default.fileExists(atPath: parentDir.path) {
-                try FileManager.default.createDirectory(at: parentDir, withIntermediateDirectories: true)
+                try FileManager.default.createDirectory(at: parentDir, withIntermediateDirectories: true, attributes: nil)
             }
             
-            // Supprimer le fichier s'il existe déjà
-            if FileManager.default.fileExists(atPath: cleanURL.path) {
-                try FileManager.default.removeItem(at: cleanURL)
+            cleanURL = parentDir.appendingPathComponent(sanitizedFileName)
+            cleanURL = cleanURL.appendingPathComponent(sanitizedFileName)
+            if cleanURL.pathExtension != "store" {
+                cleanURL = cleanURL.appendingPathExtension("store")
             }
-            
+
+            // Configurer le container SwiftData
             let config = ModelConfiguration(
                 schema: schema,
                 url: cleanURL,
@@ -102,7 +113,13 @@ class ContainerManager: ObservableObject {
             let container = try ModelContainer(for: schema, configurations: config)
             let context = container.mainContext
             
-            // Ajoute une personne
+            // Centraliser le ModelContext et l’UndoManager
+            let globalUndo = UndoManager()
+            DataContext.shared.context = context
+            DataContext.shared.undoManager = globalUndo
+            context.undoManager = globalUndo
+            
+            // Ajoute une personne de démonstration
             let samplePerson = Person(name: "Exemple", town: "Seoul", age: 25)
             context.insert(samplePerson)
             
@@ -116,7 +133,7 @@ class ContainerManager: ObservableObject {
                 print("❌ Détails: \(sqliteError.userInfo)")
             }
             
-            // Ouvrir la base créée
+            // Ouvrir la base créée (passer l’URL normalisée)
             openDatabase(at: cleanURL)
             
         } catch {
@@ -127,13 +144,23 @@ class ContainerManager: ObservableObject {
         }
     }
     
-    func openDatabase(at url: URL) {
+    @MainActor func openDatabase(at url: URL) {
         do {
             let config = ModelConfiguration(
                 schema: schema,
                 url: url
             )
-            currentContainer = try ModelContainer(for: schema, configurations: config)
+            let container = try ModelContainer(for: schema, configurations: config)
+            let context = container.mainContext
+            
+            // Centraliser le ModelContext et l'UndoManager global
+            let globalUndo = UndoManager()
+            DataContext.shared.context = context
+            DataContext.shared.undoManager = globalUndo
+            context.undoManager = globalUndo
+            
+            // Publier l'état courant
+            currentContainer = container
             currentDatabaseURL = url
             currentDatabaseName = url.deletingPathExtension().lastPathComponent
             
@@ -154,6 +181,9 @@ class ContainerManager: ObservableObject {
         currentDatabaseURL = nil
         currentDatabaseName = ""
         showingSplashScreen = true
+        
+        // Optionnel: réinitialiser le contexte global et l'undo manager
+        DataContext.shared.context = nil
+        DataContext.shared.undoManager = UndoManager()
     }
 }
-
