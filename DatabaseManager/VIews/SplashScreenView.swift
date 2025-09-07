@@ -136,7 +136,7 @@ private struct LeftPanelView: View {
                                              }
                                          }
                                      } message: {
-                                         Text(String(localized: "This operation will delete all application preferences. Are you sure you want to proceed?"))
+                                         Text("This operation will delete all application preferences. Are you sure you want to proceed?")
                                      }
 #endif
             }
@@ -162,7 +162,7 @@ private struct LeftPanelView: View {
                     url.deletePathExtension()
                     url.appendPathExtension("store")
                 }
-                print("URL sélectionnée: \(url)")
+//                print("URL sélectionnée: \(url)")
                 containerManager.createNewDatabase(at: url)
             }
         }

@@ -96,7 +96,7 @@ class ContainerManager: ObservableObject {
                 cleanURL = cleanURL.appendingPathExtension("store")
             }
             
-            print("🔧 Création de la base à: \(cleanURL.path)")
+//            print("🔧 Création de la base à: \(cleanURL.path)")
             
             // Configurer le container SwiftData
             let config = ModelConfiguration(
