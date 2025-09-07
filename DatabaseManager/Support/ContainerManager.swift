@@ -114,20 +114,7 @@ class ContainerManager: ObservableObject {
             context.undoManager = globalUndo
             
             // Ajoute une personne de démonstration
-            let samplePerson = Person(name: "Exemple", town: "Seoul", age: 25)
-            context.insert(samplePerson)
-            
-            do {
-                try context.save()
-                print("✅ L'entité a été sauvée avec succès.")
-            } catch {
-                print("❌ Erreur lors de la sauvegarde : \(error)")
-                let sqliteError = error as NSError
-                print("❌ Code SQLite: \(sqliteError.code)")
-                print("❌ Détails: \(sqliteError.userInfo)")
-            }
-            
-            // Ouvrir la base créée (passer l’URL normalisée)
+            let samplePerson = PersonManager.shared.create(name: "Exemple", town: "Seoul", age: 25)
             openDatabase(at: cleanURL)
             
         } catch {

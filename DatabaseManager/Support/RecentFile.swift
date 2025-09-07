@@ -148,10 +148,8 @@ struct AddPersonSheet: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button(String(localized: "Add")) {
-                        let person = Person(name: name, town: town, age: age)
-                        modelContext.insert(person)
-                        try? modelContext.save()
-                        
+                        PersonManager.shared.create(name: name, town: town, age: age)
+
                         isPresented = false
                         resetFields()
                         onAdd()

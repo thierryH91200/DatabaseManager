@@ -26,68 +26,114 @@ class Person {
     }
 }
 
-// CRUD
+// MARK: - Repository (stateless) pour Person
 final class PersonManager: ObservableObject {
     
     static let shared = PersonManager()
     
-    @Published var entitiesPerson = [Person]()
+    // Contexte et UndoManager actuels (fournis par ContainerManager via DataContext.shared)
+    private var modelContext: ModelContext? { DataContext.shared.context }
+    private var undoManager: UndoManager? { DataContext.shared.undoManager }
     
-    var modelContext: ModelContext? {
-        DataContext.shared.context
-    }
+    private init () {}
     
-    init () {
-    }
-        
+    // MARK: - Create
     @discardableResult
     func create(name: String, town: String, age: Int) -> Person {
         let person = Person(name: name, town: town, age: age)
+        guard let context = modelContext else { return person }
         
-        modelContext?.insert(person)
-        entitiesPerson.append(person)
-        return person
-    }
-
-    func getAllData() -> [Person] {
-        
-        entitiesPerson.removeAll()
-        
-        let predicate = #Predicate<Person> { _ in true }
-        let sort = [SortDescriptor(\Person.name, order: .forward)]
-        
-        let descriptor = FetchDescriptor<Person>(
-            predicate: predicate,
-            sortBy: sort )
-        
-        do {
-            entitiesPerson = try modelContext?.fetch(descriptor) ??   []
-        } catch {
-            print("Error fetching data from SwiftData: \(error)")
-            return []
-        }
-        return entitiesPerson
-    }
-    
-    func delete(entity: Person, undoManager: UndoManager?) {
-        guard let context = modelContext else { return }
-
         context.undoManager = undoManager
         context.undoManager?.beginUndoGrouping()
-        context.undoManager?.setActionName("Delete Person")
-        context.delete(entity)
+        context.undoManager?.setActionName(String(localized: "Add Person"))
+        context.insert(person)
         context.undoManager?.endUndoGrouping()
+        
+        do {
+            try context.save()
+        } catch {
+            // Log technique; tu peux remplacer par OSLog si tu préfères
+            print("❌ Error saving after create Person:", error)
+        }
+        return person
+    }
+    
+    // MARK: - Update
+    func update(person: Person, name: String, town: String, age: Int) {
+        guard let context = modelContext else { return }
+        
+        let oldName = person.name
+        let oldTown = person.town
+        let oldAge  = person.age
+        
+        context.undoManager = undoManager
+        context.undoManager?.beginUndoGrouping()
+        context.undoManager?.setActionName(String(localized: "Edit Person"))
+        
+        person.name = name
+        person.town = town
+        person.age  = age
+        
+        // Optionnel: enregistrer un undo ciblé si tu souhaites un contrôle fin
+        context.undoManager?.registerUndo(withTarget: person) { target in
+            target.name = oldName
+            target.town = oldTown
+            target.age  = oldAge
+            do {
+                try context.save()
+            } catch {
+                print("❌ Error saving after undo edit Person:", error)
+            }
+        }
+        
+        context.undoManager?.endUndoGrouping()
+        do {
+            try context.save()
+        } catch {
+            print("❌ Error saving after update Person:", error)
+        }
+    }
+    
+    // MARK: - Delete
+    func delete(person: Person) {
+        guard let context = modelContext else { return }
+        
+        context.undoManager = undoManager
+        context.undoManager?.beginUndoGrouping()
+        context.undoManager?.setActionName(String(localized: "Delete Person"))
+        context.delete(person)
+        context.undoManager?.endUndoGrouping()
+        
+        do {
+            try context.save()
+        } catch {
+            print("❌ Error saving after delete Person:", error)
+        }
+    }
+    
+    // MARK: - Fetch
+    func fetchAll(sortedBy sortDescriptors: [SortDescriptor<Person>] = [SortDescriptor(\Person.name, order: .forward)]) -> [Person] {
+        guard let context = modelContext else { return [] }
+        
+        let descriptor = FetchDescriptor<Person>(
+            predicate: nil,
+            sortBy: sortDescriptors
+        )
+        do {
+            return try context.fetch(descriptor)
+        } catch {
+            print("❌ Error fetching Persons:", error)
+            return []
+        }
     }
 }
 
+// MARK: - Contexte global (fourni par ContainerManager)
 final class DataContext {
     static let shared = DataContext()
     
-    @Published var persons = [Person]()
     var context: ModelContext?
     var undoManager: UndoManager? = UndoManager()
 
-    init() {}
+    private init() {}
 }
-
-

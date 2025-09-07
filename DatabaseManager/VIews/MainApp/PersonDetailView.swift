@@ -105,17 +105,8 @@ struct PersonDetailView: View {
     }
     
     private func deletePerson() {
-        guard let undoManager else {
-            modelContext.delete(person)
-            try? modelContext.save()
-            dismiss()
-            return
-        }
-        undoManager.beginUndoGrouping()
-        undoManager.setActionName(String(localized: "Delete Person"))
-        modelContext.delete(person)
-        undoManager.endUndoGrouping()
-        try? modelContext.save()
+        // Utilise le repository pour une suppression avec Undo/Redo homogène
+        PersonManager.shared.delete(person: person)
         dismiss()
     }
 }

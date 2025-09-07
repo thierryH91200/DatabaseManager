@@ -315,7 +315,11 @@ struct PersonListView: View {
             for index in offsets {
                 modelContext.delete(people[index])
             }
-            try? modelContext.save()
+            do {
+            try modelContext.save()
+            } catch {
+                print("Erreur de sauvegarde SwiftData:", error)
+            }
         }
     }
 }

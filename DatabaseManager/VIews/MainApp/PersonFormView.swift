@@ -100,13 +100,20 @@ struct PersonFormView: View {
     private func save() {
         if isModeCreate {
             let newItem = PersonManager.shared.create(name: name, town: town, age: age)
-            modelContext.insert(newItem)
-            try? modelContext.save()
+            do {
+                try modelContext.save()
+            } catch {
+                print("Erreur de sauvegarde SwiftData:", error)
+            }
 
             // Undo pour la création
             undoManager?.registerUndo(withTarget: modelContext) { context in
                 context.delete(newItem)
-                try? modelContext.save()
+                do {
+                    try modelContext.save()
+                } catch {
+                    print("Erreur de sauvegarde SwiftData:", error)
+                }
             }
         } else if let existingItem = person {
             let oldName = existingItem.name
@@ -115,13 +122,21 @@ struct PersonFormView: View {
             existingItem.name = name
             existingItem.town = town
             existingItem.age = age
-            try? modelContext.save()
+            do {
+                try modelContext.save()
+            } catch {
+                print("Erreur de sauvegarde SwiftData:", error)
+            }
             // Undo pour la modification
             undoManager?.registerUndo(withTarget: existingItem) { target in
                 target.name = oldName
                 target.town = oldTown
                 target.age = oldAge
-                try? modelContext.save()
+                do {
+                    try modelContext.save()
+                } catch {
+                    print("Erreur de sauvegarde SwiftData:", error)
+                }
             }
         }
         onSave?()
