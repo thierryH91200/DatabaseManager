@@ -101,10 +101,12 @@ struct PersonFormView: View {
         if isModeCreate {
             let newItem = PersonManager.shared.create(name: name, town: town, age: age)
             modelContext.insert(newItem)
-            
+            try? modelContext.save()
+
             // Undo pour la création
             undoManager?.registerUndo(withTarget: modelContext) { context in
                 context.delete(newItem)
+                try? modelContext.save()
             }
         } else if let existingItem = person {
             let oldName = existingItem.name

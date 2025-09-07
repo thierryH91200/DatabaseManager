@@ -88,8 +88,8 @@ struct DatabaseManagerApp: App {
     }
 }
 
-final class AppGlobals {
-    static let shared = AppGlobals()
+final class AppSchema {
+    static let shared = AppSchema()
     let schema = Schema([Person.self])
     
     private init() {}

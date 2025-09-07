@@ -145,11 +145,22 @@ private struct LeftPanelView: View {
             
             Spacer()
         }
+        .alert("Copie réussie", isPresented: $showCopySuccessAlert) {
+            Button(role: .cancel) {
+                // No action needed
+            } label: {
+                Text("✅ OK")
+            }
+            .frame(width: 50)
+
+        } message: {
+            Text("La copie a bien été effectuée.")
+        }
+
         .frame(width: 332) // 300 utile + 2*16 padding
     }
     private func showSavePanel() {
         let panel = NSSavePanel()
-        // N’autoriser que .store
         panel.allowedContentTypes = [.store]
         panel.nameFieldStringValue = "New Base"
         panel.canCreateDirectories = true
@@ -170,7 +181,7 @@ private struct LeftPanelView: View {
     // https://stackoverflow.com/questions/40761140/how-to-pre-load-database-in-core-data-using-swift-3-xcode-8
     func preloadDBData() {
         let folder = "DataBaseManager"
-        let file = "SampleDataBaseManager.store"
+//        let file = "SampleDataBaseManager.store"
         let documentsURL = URL.documentsDirectory
         let newDirectory = documentsURL.appendingPathComponent(folder)
         
@@ -182,25 +193,14 @@ private struct LeftPanelView: View {
             print("❌ Erreur création base : \(error)")
             return
         }
-        
-        let newDirectory1 = newDirectory.appendingPathComponent(folder)
-        
-        do {
-            if !FileManager.default.fileExists(atPath: newDirectory1.path) {
-                try FileManager.default.createDirectory(at: newDirectory1, withIntermediateDirectories: true)
-            }
-        } catch {
-            print("❌ Erreur création base : \(error)")
-            return
-        }
-        
-        guard let sqlitePath = Bundle.main.path(forResource: "SampleWelcomeTo", ofType: "store") else {
+                        
+        guard let sqlitePath = Bundle.main.path(forResource: "SampleManager", ofType: "store") else {
             print("Fichier source introuvable dans le bundle")
             return
         }
         
         let URL1 = URL(fileURLWithPath: sqlitePath)
-        let storeURL = newDirectory1.appendingPathComponent(file)
+        let storeURL = newDirectory.appendingPathComponent("SampleManager.store")
         
         // Supprime l'ancien fichier s'il existe déjà à destination
         if FileManager.default.fileExists(atPath: storeURL.path) {
@@ -213,8 +213,12 @@ private struct LeftPanelView: View {
         
         do {
             try FileManager.default.copyItem(at: URL1, to: storeURL)
+            print("Succes lors de la copie")
+            print(storeURL.path)
+
             DispatchQueue.main.async {
-                self.showCopySuccessAlert = false
+                containerManager.openDatabase(at: storeURL)
+                self.showCopySuccessAlert = true
             }
         } catch {
             print("Erreur lors de la copie : \(error)")

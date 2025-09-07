@@ -20,7 +20,7 @@ class ContainerManager: ObservableObject {
     private let recentFilesKey = "RecentDatabases"
     private let maxRecentFiles = 10
     
-    let schema = AppGlobals.shared.schema
+    let schema = AppSchema.shared.schema
 
     init() {
         loadRecentFiles()
@@ -53,7 +53,6 @@ class ContainerManager: ObservableObject {
         if recentFiles.count > maxRecentFiles {
             recentFiles = Array(recentFiles.prefix(maxRecentFiles))
         }
-        
         saveRecentFiles()
     }
     
@@ -74,7 +73,7 @@ class ContainerManager: ObservableObject {
     // Crée une base au chemin donné (p.ex. choisi via NSSavePanel)
     @MainActor
     func createNewDatabase(at url: URL) {
-        let schema = AppGlobals.shared.schema
+        let schema = AppSchema.shared.schema
         
         do {
             // Normaliser l’URL: nom de fichier nettoyé + extension .store
