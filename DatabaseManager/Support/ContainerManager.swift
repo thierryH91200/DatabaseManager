@@ -9,6 +9,12 @@ import SwiftUI
 import SwiftData
 import Combine
 
+private func logUI(_ message: String, pr: Bool = false) {
+    if !pr { return }
+    let ts = ISO8601DateFormatter().string(from: Date())
+    print("[UI] \(ts) - \(message)")
+}
+
 // MARK: - Container Manager avec gestion fichiers récents
 class ContainerManager: ObservableObject {
     @Published var currentContainer: ModelContainer?
@@ -24,6 +30,7 @@ class ContainerManager: ObservableObject {
 
     init() {
         loadRecentFiles()
+        logUI("ContainerManager.init - showingSplashScreen=\(showingSplashScreen)")
     }
     
     // MARK: - Gestion des fichiers récents
@@ -74,6 +81,7 @@ class ContainerManager: ObservableObject {
     @MainActor
     func createNewDatabase(at url: URL) {
         let schema = AppSchema.shared.schema
+        logUI("createNewDatabase begin - url=\(url.path)")
         
         do {
             // Normaliser l’URL: nom de fichier nettoyé + extension .store
@@ -94,9 +102,7 @@ class ContainerManager: ObservableObject {
             if cleanURL.pathExtension != "store" {
                 cleanURL = cleanURL.appendingPathExtension("store")
             }
-            
-//            print("🔧 Création de la base à: \(cleanURL.path)")
-            
+                        
             // Configurer le container SwiftData
             let config = ModelConfiguration(
                 schema: schema,
@@ -113,10 +119,11 @@ class ContainerManager: ObservableObject {
             DataContext.shared.undoManager = globalUndo
             context.undoManager = globalUndo
             
-            // Ajoute une personne de démonstration
-            let samplePerson = PersonManager.shared.create(name: "Exemple", town: "Seoul", age: 25)
+            initBDD()  // >--> Important
+
+            logUI("createNewDatabase end - about to openDatabase at \(cleanURL.path)")
             openDatabase(at: cleanURL)
-            
+
         } catch {
             print("❌ Erreur lors de la création : \(error)")
             let sqliteError = error as NSError
@@ -124,8 +131,17 @@ class ContainerManager: ObservableObject {
             print("❌ Détails: \(sqliteError.userInfo)")
         }
     }
+    func initBDD() {
+        // initialisation de la BDD
+        //une personne de démonstration
+        PersonManager.shared.create(name: "Exemple", town: "Seoul", age: 25)
+
+        // Une BDD plus complexe
+//        InitManager.shared.initialize()
+    }
     
     @MainActor func openDatabase(at url: URL) {
+        logUI("openDatabase begin - url=\(url.path)")
         do {
             let config = ModelConfiguration(
                 schema: schema,
@@ -145,26 +161,42 @@ class ContainerManager: ObservableObject {
             currentDatabaseURL = url
             currentDatabaseName = url.deletingPathExtension().lastPathComponent
             
+            logUI("openDatabase state set - name=\(currentDatabaseName) url=\(currentDatabaseURL?.path ?? "nil")")
+            
             // Ajouter aux fichiers récents
             let recentFile = RecentFile(name: currentDatabaseName, url: url)
             addToRecentFiles(recentFile)
             
-            // Ferme le splash screen
-            showingSplashScreen = false
+            logUI("openDatabase about to hide splash - showingSplashScreen=\(showingSplashScreen)")
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                logUI("openDatabase hiding splash (async) - before=\(self.showingSplashScreen)")
+                self.showingSplashScreen = false
+                logUI("openDatabase did hide splash (async) - after=\(self.showingSplashScreen)")
+            }
             
+            logUI("openDatabase end")
         } catch {
             print("Erreur lors de l'ouverture : \(error)")
         }
     }
     
     func closeCurrentDatabase() {
+        logUI("closeCurrentDatabase begin - showingSplashScreen=\(showingSplashScreen)")
         currentContainer = nil
         currentDatabaseURL = nil
         currentDatabaseName = ""
-        showingSplashScreen = true
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            logUI("closeCurrentDatabase set splash (async) - before=\(self.showingSplashScreen)")
+            self.showingSplashScreen = true
+            logUI("closeCurrentDatabase set splash (async) - after=\(self.showingSplashScreen)")
+        }
         
         // Optionnel: réinitialiser le contexte global et l'undo manager
         DataContext.shared.context = nil
         DataContext.shared.undoManager = UndoManager()
+        logUI("closeCurrentDatabase end")
     }
 }
+

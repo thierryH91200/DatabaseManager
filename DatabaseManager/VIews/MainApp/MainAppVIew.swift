@@ -148,10 +148,9 @@ struct PersonListView: View {
                         Text("\(person.createdAt, style: .date)")
                     }
                 })
-                .onChange(of: sortOrder) { _, newValue in
-                    // Optionnel: réappliquer l'ordre local si besoin
-                    // Ici, on refetch depuis SwiftData pour rester source-de-vérité
-                    people = PersonManager.shared.getAllData()
+                .onChange(of: sortOrder) { _, _ in
+                    // Refetch depuis le repository pour rester source-de-vérité
+                    people = PersonManager.shared.fetchAll()
                 }
                 .gesture(
                     TapGesture(count: 2).onEnded {
@@ -223,7 +222,7 @@ struct PersonListView: View {
                 ) {
                     if let manager = undoManager, manager.canUndo {
                         manager.undo()
-                        people = PersonManager.shared.getAllData()
+                        people = PersonManager.shared.fetchAll()
                     }
                 }
                 UniformLabeledButton(
@@ -235,7 +234,7 @@ struct PersonListView: View {
                 ) {
                     if let manager = undoManager, manager.canRedo {
                         manager.redo()
-                        people = PersonManager.shared.getAllData()
+                        people = PersonManager.shared.fetchAll()
                     }
                 }
             }
@@ -249,34 +248,37 @@ struct PersonListView: View {
             }
         }
         .onAppear {
-            DataContext.shared.context = modelContext
-            people = PersonManager.shared.getAllData()
+            people = PersonManager.shared.fetchAll()
         }
 
-        .sheet(isPresented: $isAddDialogPresented ,
+        .sheet(isPresented: $isAddDialogPresented,
                onDismiss: {
-            people = PersonManager.shared.getAllData()})
-        {
+            // Rafraîchir après création/annulation
+            people = PersonManager.shared.fetchAll()
+        }) {
             PersonFormView(
                 isPresented: $isAddDialogPresented,
                 isModeCreate: $isModeCreate,
-                person: nil )
+                person: nil
+            )
         }
         
         .sheet(isPresented: $isEditDialogPresented,
                onDismiss: {
-            people = PersonManager.shared.getAllData()})
-        {
+            // Rafraîchir après édition/annulation
+            people = PersonManager.shared.fetchAll()
+        }) {
             let safePerson = people.first(where: { $0.id == selectedItem })
             PersonFormView(
                 isPresented: $isEditDialogPresented,
                 isModeCreate: $isModeCreate,
-                person: safePerson )
+                person: safePerson
+            )
         }
         
         .sheet(isPresented: $showingDetail, onDismiss: {
             // rafraîchir si des modifications ont eu lieu
-            people = PersonManager.shared.getAllData()
+            people = PersonManager.shared.fetchAll()
         }) {
             let id = selectedItem
             let item = people.first(where: { $0.id == id })
@@ -301,26 +303,25 @@ struct PersonListView: View {
            let item = people.first(where: { $0.id == id }) {
             lastDeletedID = id
             
-            PersonManager.shared.delete(entity: item, undoManager: undoManager)
+            // Suppression via repository (Undo/Redo et save inclus)
+            PersonManager.shared.delete(person: item)
             
             DispatchQueue.main.async {
                 selectedItem = nil
             }
-            people = PersonManager.shared.getAllData()
+            // Refetch après mutation
+            people = PersonManager.shared.fetchAll()
         }
     }
 
     private func deletePeople(offsets: IndexSet) {
         withAnimation {
-            for index in offsets {
-                modelContext.delete(people[index])
+            // Supprimer via le repository pour chaque index, puis refetch
+            let toDelete = offsets.map { people[$0] }
+            toDelete.forEach { person in
+                PersonManager.shared.delete(person: person)
             }
-            do {
-            try modelContext.save()
-            } catch {
-                print("Erreur de sauvegarde SwiftData:", error)
-            }
+            people = PersonManager.shared.fetchAll()
         }
     }
 }
-

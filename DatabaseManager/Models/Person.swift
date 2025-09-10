@@ -74,7 +74,6 @@ final class PersonManager: ObservableObject {
         person.town = town
         person.age  = age
         
-        // Optionnel: enregistrer un undo ciblé si tu souhaites un contrôle fin
         context.undoManager?.registerUndo(withTarget: person) { target in
             target.name = oldName
             target.town = oldTown
@@ -128,12 +127,3 @@ final class PersonManager: ObservableObject {
     }
 }
 
-// MARK: - Contexte global (fourni par ContainerManager)
-final class DataContext {
-    static let shared = DataContext()
-    
-    var context: ModelContext?
-    var undoManager: UndoManager? = UndoManager()
-
-    private init() {}
-}

@@ -13,6 +13,10 @@ struct DatabaseManagerApp: App {
 
     @StateObject private var containerManager = ContainerManager()
     
+    init() {
+        ColorTransformer.register()
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -90,7 +94,27 @@ struct DatabaseManagerApp: App {
 
 final class AppSchema {
     static let shared = AppSchema()
-    let schema = Schema([Person.self])
+    
+//    let schema = Schema([
+//        EntityAccount.self,
+//        EntityBankStatement.self,
+//        EntityBanqueInfo.self,
+//        EntityCategory.self,
+//        EntityCheckBook.self,
+//        EntityFolderAccount.self,
+//        EntityIdentity.self,
+//        EntityInitAccount.self,
+//        EntityPaymentMode.self,
+//        EntityStatus.self,
+//        EntityPreference.self,
+//        EntityRubric.self,
+//        EntitySchedule.self,
+//        EntitySousOperation.self,
+//        EntityTransaction.self
+//    ])
+    
+    let schema = Schema([ Person.self])
+
     
     private init() {}
 }
