@@ -114,7 +114,5 @@ final class AppSchema {
 //    ])
     
     let schema = Schema([ Person.self])
-
-    
     private init() {}
 }

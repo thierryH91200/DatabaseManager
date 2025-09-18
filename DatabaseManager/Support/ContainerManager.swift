@@ -109,7 +109,8 @@ class ContainerManager: ObservableObject {
                 url: cleanURL,
                 allowsSave: true
             )
-            
+            // schema  -->  schema: AppSchema.shared.schema
+            // Imporotant
             let container = try ModelContainer(for: schema, configurations: config)
             let context = container.mainContext
             
@@ -192,6 +193,7 @@ class ContainerManager: ObservableObject {
             self.showingSplashScreen = true
             logUI("closeCurrentDatabase set splash (async) - after=\(self.showingSplashScreen)")
         }
+//        PersonManager.shared.reset()
         
         // Optionnel: réinitialiser le contexte global et l'undo manager
         DataContext.shared.context = nil

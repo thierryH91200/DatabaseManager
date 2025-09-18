@@ -31,11 +31,17 @@ final class PersonManager: ObservableObject {
     
     static let shared = PersonManager()
     
+    var persons : [Person] = []
+    
     // Contexte et UndoManager actuels (fournis par ContainerManager via DataContext.shared)
     private var modelContext: ModelContext? { DataContext.shared.context }
     private var undoManager: UndoManager? { DataContext.shared.undoManager }
-    
+
     private init () {}
+    
+    func reset() {
+        persons.removeAll()
+    }
     
     // MARK: - Create
     @discardableResult
@@ -119,11 +125,12 @@ final class PersonManager: ObservableObject {
             sortBy: sortDescriptors
         )
         do {
-            return try context.fetch(descriptor)
+            persons =  try context.fetch(descriptor)
         } catch {
             print("❌ Error fetching Persons:", error)
             return []
         }
+        return persons
     }
 }
 

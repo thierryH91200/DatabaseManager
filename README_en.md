@@ -37,3 +37,23 @@ Modern manager for SwiftData databases on macOS.
 1. Clone this repository:
    ```sh
    git clone <repo-url>
+
+
+If you want to change the database,
+it’s important to define the schema as you see fit.
+It is defined
+in the file “DatabaseManagerApp”
+
+
+'final class AppSchema {
+    static let shared = AppSchema()
+      
+    let schema = Schema([Person.self])
+    
+    private init() {}
+}'
+
+and to create a CRUD in your ModelManager.
+
+Everything that is part of the “MianAppp” folder belongs to your application;
+the rest is part of the database manager.
