@@ -3,14 +3,13 @@ import SwiftData
 import Foundation
 import Combine
 import AppKit
-internal import UniformTypeIdentifiers
+import UniformTypeIdentifiers
 
 // MARK: - App principale
 @main
 struct DatabaseManagerApp: App {
     
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
-
     @StateObject private var containerManager = ContainerManager()
     
     init() {

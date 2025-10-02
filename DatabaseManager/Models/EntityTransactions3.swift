@@ -9,62 +9,60 @@
 import Foundation
 import SwiftData
 
-public extension Sequence where Element: Equatable {
+// Faster O(n) uniqueness when Element is Hashable.
+public extension Sequence where Element: Hashable {
     var uniqueElements: [Element] {
-        return self.reduce(into: []) {
-            uniqueElements, element in
-            
-            if !uniqueElements.contains(element) {
-                uniqueElements.append(element)
-            }
-        }
+        var seen = Set<Element>()
+        return self.filter { seen.insert($0).inserted }
     }
 }
 
-// MARK: convert dictionary to class
-class GroupedYearOperations : NSObject {
-    let year     : String
-    var allMonth : [GroupedMonthOperations]
+// MARK: - Grouped models
+
+final class GroupedYearOperations {
+    let year: String
+    var allMonth: [GroupedMonthOperations]
     
-    init( dictionary: (key: String, value: [String: [Transaction]])) {
+    // dictionary: key = year, value = [month: [TransactionItem]]
+    init(dictionary: (key: String, value: [String: [TransactionItem]])) {
         self.year = dictionary.key
         
-        self.allMonth = [GroupedMonthOperations]()
-        let months = (dictionary.value).map { (key: String , value: [Transaction]) -> GroupedMonthOperations in
-            return GroupedMonthOperations(month : key , Transactions: value)
+        let months = dictionary.value.map { (key: String, value: [TransactionItem]) -> GroupedMonthOperations in
+            GroupedMonthOperations(month: key, transactions: value)
         }
-        self.allMonth = months.sorted(by: {$0.month > $1.month})
+        // NOTE: This is a lexicographic sort on strings.
+        // Prefer a numeric month (1...12) for perfect ordering if possible.
+        self.allMonth = months.sorted { $0.month > $1.month }
     }
 }
 
-class GroupedMonthOperations : NSObject {
-    let month       : String
-    let transactions : [ Transaction ]
+final class GroupedMonthOperations {
+    let month: String
+    let transactions: [TransactionItem]
     
-    init( month: String, Transactions: [Transaction]) {
-        
+    init(month: String, transactions: [TransactionItem]) {
         self.month = month
-        let idAllOperation = (0 ..< Transactions.count).map { (i) -> Transaction in
-            return Transaction(year : Transactions[i].year, id: Transactions[i].id, entityTransaction: Transactions[i].entityTransaction)
+        // Sort by posting date (pointage) descending
+        self.transactions = transactions.sorted {
+            $0.entityTransaction.datePointage > $1.entityTransaction.datePointage
         }
-        self.transactions = idAllOperation.sorted(by: { $0.entityTransaction.datePointage.timeIntervalSince1970 > $1.entityTransaction.datePointage.timeIntervalSince1970 })
     }
 }
 
-class Transaction : NSObject {
-    let isCb             : Bool
-    let year             : String
-    let id               : String
-    let entityTransaction : EntityTransaction
+// MARK: - Lightweight view model for a transaction
+struct TransactionItem {
+    let year: String
+    let id: String
+    let entityTransaction: EntityTransaction
     
-    init( year: String, id: String, entityTransaction: EntityTransaction) {
-        self.year = year
-        self.id = id
-        self.entityTransaction = entityTransaction
-        self.isCb = false
-//        let mode = self.entityTransaction.paymentMode?.name
-//        self.cb = mode == PaymentMethod.Bank_Card ? true : false
+    // Compute instead of storing when you can derive from the source of truth.
+    var isCardPayment: Bool {
+        guard let modeName = entityTransaction.paymentMode?.name else { return false }
+        let bankCardName = String(localized: "Bank Card")
+        return modeName == bankCardName
     }
 }
 
+@available(*, deprecated, renamed: "TransactionItem")
+typealias Transaction = TransactionItem
 

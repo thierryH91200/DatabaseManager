@@ -7,7 +7,8 @@
 
 import Foundation
 import SwiftData
-import Combine
+import Observation
+import OSLog
 
 // MARK: - Modèle de données
 @Model
@@ -27,11 +28,15 @@ class Person {
 }
 
 // MARK: - Repository (stateless) pour Person
-final class PersonManager: ObservableObject {
+@MainActor
+@Observable
+final class PersonManager {
+    
     
     static let shared = PersonManager()
+    private let logger = Logger(subsystem: "DatabaseManager", category: "PersonManager")
     
-    var persons : [Person] = []
+    var persons: [Person] = []
     
     // Contexte et UndoManager actuels (fournis par ContainerManager via DataContext.shared)
     private var modelContext: ModelContext? { DataContext.shared.context }
@@ -47,7 +52,10 @@ final class PersonManager: ObservableObject {
     @discardableResult
     func create(name: String, town: String, age: Int) -> Person {
         let person = Person(name: name, town: town, age: age)
-        guard let context = modelContext else { return person }
+        guard let context = modelContext else {
+            logger.error("ModelContext missing in create(); returning unsaved Person.")
+            return person
+        }
         
         context.undoManager = undoManager
         context.undoManager?.beginUndoGrouping()
@@ -59,14 +67,17 @@ final class PersonManager: ObservableObject {
             try context.save()
         } catch {
             // Log technique; tu peux remplacer par OSLog si tu préfères
-            print("❌ Error saving after create Person:", error)
+            logger.error("Error saving after create Person: \(error.localizedDescription, privacy: .public)")
         }
         return person
     }
     
     // MARK: - Update
     func update(person: Person, name: String, town: String, age: Int) {
-        guard let context = modelContext else { return }
+        guard let context = modelContext else {
+            logger.error("ModelContext missing in update(); aborting.")
+            return
+        }
         
         let oldName = person.name
         let oldTown = person.town
@@ -87,7 +98,7 @@ final class PersonManager: ObservableObject {
             do {
                 try context.save()
             } catch {
-                print("❌ Error saving after undo edit Person:", error)
+                self.logger.error("Error saving after undo edit Person: \(error.localizedDescription, privacy: .public)")
             }
         }
         
@@ -95,13 +106,16 @@ final class PersonManager: ObservableObject {
         do {
             try context.save()
         } catch {
-            print("❌ Error saving after update Person:", error)
+            logger.error("Error saving after update Person: \(error.localizedDescription, privacy: .public)")
         }
     }
     
     // MARK: - Delete
     func delete(person: Person) {
-        guard let context = modelContext else { return }
+        guard let context = modelContext else {
+            logger.error("ModelContext missing in delete(); aborting.")
+            return
+        }
         
         context.undoManager = undoManager
         context.undoManager?.beginUndoGrouping()
@@ -112,13 +126,16 @@ final class PersonManager: ObservableObject {
         do {
             try context.save()
         } catch {
-            print("❌ Error saving after delete Person:", error)
+            logger.error("Error saving after delete Person: \(error.localizedDescription, privacy: .public)")
         }
     }
     
     // MARK: - Fetch
     func fetchAll(sortedBy sortDescriptors: [SortDescriptor<Person>] = [SortDescriptor(\Person.name, order: .forward)]) -> [Person] {
-        guard let context = modelContext else { return [] }
+        guard let context = modelContext else {
+            logger.error("ModelContext missing in fetchAll(); returning empty list.")
+            return []
+        }
         
         let descriptor = FetchDescriptor<Person>(
             predicate: nil,
@@ -127,7 +144,7 @@ final class PersonManager: ObservableObject {
         do {
             persons =  try context.fetch(descriptor)
         } catch {
-            print("❌ Error fetching Persons:", error)
+            logger.error("Error fetching Persons: \(error.localizedDescription, privacy: .public)")
             return []
         }
         return persons

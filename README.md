@@ -1,5 +1,5 @@
 
-![Swift](https://img.shields.io/badge/Swift-5.7-orange) ![macOS](https://img.shields.io/badge/macOS-14-blue) ![License](https://img.shields.io/badge/License-MIT-green)
+![Swift](https://img.shields.io/badge/Swift-5.9-orange) ![macOS](https://img.shields.io/badge/macOS-14-blue) ![License](https://img.shields.io/badge/License-MIT-green)
     <a href="https://github.com/thierryH91200/DataBaseManager/releases/latest" alt="Downloads">
           <img src="https://img.shields.io/github/downloads/thierryH91200/DataBaseManager/total.svg" /></a>
 

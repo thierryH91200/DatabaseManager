@@ -8,9 +8,8 @@
 import SwiftUI
 import SwiftData
 import Foundation
-import Combine
 import AppKit
-internal import UniformTypeIdentifiers
+import UniformTypeIdentifiers
 
 // MARK: - Structure pour les fichiers récents
 struct RecentFile: Identifiable, Codable {

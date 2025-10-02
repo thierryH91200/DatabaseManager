@@ -9,7 +9,7 @@
 import SwiftUI
 import SwiftData
 import Combine
-internal import UniformTypeIdentifiers
+import UniformTypeIdentifiers
 
 
 // MARK: - Splash Screen
@@ -145,7 +145,7 @@ private struct LeftPanelView: View {
             
             Spacer()
         }
-        .alert("Copie réussie", isPresented: $showCopySuccessAlert) {
+        .alert("Copy successful", isPresented: $showCopySuccessAlert) {
             Button(role: .cancel) {
                 // No action needed
             } label: {
@@ -154,7 +154,7 @@ private struct LeftPanelView: View {
             .frame(width: 50)
 
         } message: {
-            Text("La copie a bien été effectuée.")
+            Text("The copy has been successfully completed.")
         }
 
         .frame(width: 332) // 300 utile + 2*16 padding
