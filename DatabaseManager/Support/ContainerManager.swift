@@ -68,6 +68,14 @@ class ContainerManager: ObservableObject {
         saveRecentFiles()
     }
     
+    @MainActor private func clearAllCaches() {
+        // Vider les caches des managers connus
+        
+        PersonManager.shared.reset()
+        
+        // TODO: Ajouter ici d'autres nettoyages si vous avez d'autres managers qui gardent des entités
+    }
+
     // MARK: - Helpers
     private func sanitizeFileName(_ name: String) -> String {
         name
@@ -183,22 +191,25 @@ class ContainerManager: ObservableObject {
     }
     
     func closeCurrentDatabase() {
-        logUI("closeCurrentDatabase begin - showingSplashScreen=\(showingSplashScreen)")
-        currentContainer = nil
+        // 1) Prévenir l’UI qu’on ferme, pour qu’elle cesse d’accéder aux entités
         currentDatabaseURL = nil
         currentDatabaseName = ""
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            logUI("closeCurrentDatabase set splash (async) - before=\(self.showingSplashScreen)")
-            self.showingSplashScreen = true
-            logUI("closeCurrentDatabase set splash (async) - after=\(self.showingSplashScreen)")
-        }
-//        PersonManager.shared.reset()
         
-        // Optionnel: réinitialiser le contexte global et l'undo manager
-        DataContext.shared.context = nil
-        DataContext.shared.undoManager = UndoManager()
-        logUI("closeCurrentDatabase end")
+        // 2) Vider les caches applicatifs qui conservent des instances SwiftData
+        clearAllCaches()
+
+        // 3) Laisser l’UI appliquer ces changements avant de débrancher le contexte
+        Task { @MainActor in
+            // Laisser passer au moins un cycle de runloop
+            await Task.yield()
+            try await Task.sleep(nanoseconds: 20_000_000) // 20ms pour être large (optionnel)
+            
+            let emptyContainer = try? ModelContainer(for: DummyModel.self)
+            DataContext.shared.container = emptyContainer
+            DataContext.shared.context = ModelContext(emptyContainer!)
+            DataContext.shared.undoManager = UndoManager()
+        }
+        showingSplashScreen = true
     }
 }
 

@@ -32,7 +32,6 @@ class Person {
 @Observable
 final class PersonManager {
     
-    
     static let shared = PersonManager()
     private let logger = Logger(subsystem: "DatabaseManager", category: "PersonManager")
     

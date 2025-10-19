@@ -82,6 +82,10 @@ struct ContentView: View {
 
         // Optionnel: changer le titre pour repérer l’état
         window.title = isSplash ? "Welcome" : containerManager.currentDatabaseName.isEmpty ? "Main" : containerManager.currentDatabaseName
+//        if let build = Bundle.main.object(forInfoDictionaryKey: "testBuild") as? String {
+//            print("Numéro de test build : \(build)")
+        }
+
     }
 
     // Anime (ou non) la mise à jour de la frame
