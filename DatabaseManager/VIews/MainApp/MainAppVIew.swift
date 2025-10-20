@@ -12,10 +12,10 @@ import Combine
 
 // MARK: - Vue principale de l'app
 struct MainAppView: View {
-
+    
     @EnvironmentObject var containerManager: ContainerManager
     @State private var isDarkMode = false
-
+    
     var body: some View {
         NavigationSplitView {
             // Sidebar
@@ -87,10 +87,10 @@ struct MainAppView: View {
 
 // MARK: - Vue liste des personnes (simplifiée)
 struct PersonListView: View {
-
+    
     @Environment(\.modelContext) private var modelContext
     @Environment(\.undoManager) private var undoManager
-
+    
     @State private var newPersonName = ""
     @State private var newPersonAge = 25
     
@@ -99,7 +99,7 @@ struct PersonListView: View {
     @State private var sortOrder = [KeyPathComparator(\Person.name)]
     
     @State private var lastDeletedID: Person.ID?
-
+    
     @State private var isAddDialogPresented = false
     @State private var isEditDialogPresented = false
     @State private var isModeCreate = false
@@ -107,7 +107,7 @@ struct PersonListView: View {
     // Fiche détail
     @State private var showingDetail = false
     @State private var detailPerson: Person?
-
+    
     var manager : UndoManager? {
         UndoManager()
     }
@@ -117,7 +117,7 @@ struct PersonListView: View {
     var canRedo : Bool? {
         undoManager?.canRedo ?? false
     }
-
+    
     var body: some View {
         VStack {
             if people.isEmpty {
@@ -148,9 +148,8 @@ struct PersonListView: View {
                         Text("\(person.createdAt, style: .date)")
                     }
                 })
-                .onChange(of: sortOrder) { _, _ in
-                    // Refetch depuis le repository pour rester source-de-vérité
-                    people = PersonManager.shared.fetchAll()
+                .onChange(of: sortOrder) { _, newOrder in
+                    people.sort(using: newOrder)
                 }
                 .gesture(
                     TapGesture(count: 2).onEnded {
@@ -201,7 +200,7 @@ struct PersonListView: View {
                     }
                 }
                 .disabled(selectedItem == nil)
-
+                
                 UniformLabeledButton(
                     String(localized: "Delete",table: "MainApp"),
                     systemImage: "trash",
@@ -212,7 +211,7 @@ struct PersonListView: View {
                     delete()
                 }
                 .disabled(selectedItem == nil)
-
+                
                 UniformLabeledButton(
                     String(localized: "Undo",table: "MainApp"),
                     systemImage: "arrow.uturn.backward",
@@ -250,7 +249,7 @@ struct PersonListView: View {
         .onAppear {
             people = PersonManager.shared.fetchAll()
         }
-
+        
         .sheet(isPresented: $isAddDialogPresented,
                onDismiss: {
             // Rafraîchir après création/annulation
@@ -313,7 +312,7 @@ struct PersonListView: View {
             people = PersonManager.shared.fetchAll()
         }
     }
-
+    
     private func deletePeople(offsets: IndexSet) {
         withAnimation {
             // Supprimer via le repository pour chaque index, puis refetch
@@ -325,3 +324,4 @@ struct PersonListView: View {
         }
     }
 }
+

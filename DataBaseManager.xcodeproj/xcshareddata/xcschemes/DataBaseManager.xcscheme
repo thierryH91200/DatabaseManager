@@ -6,6 +6,24 @@
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
       buildArchitectures = "Automatic">
+      <PreActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "&#10;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "035D4FC12E5B2D82002F62C3"
+                     BuildableName = "DataBaseManager.app"
+                     BlueprintName = "DataBaseManager"
+                     ReferencedContainer = "container:DataBaseManager.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PreActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -41,6 +59,24 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <PreActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "#!/bin/sh&#10;set -euo pipefail&#10;&#10;# 1) D&#xe9;finir chemins&#10;PROJECT_NAME=$(basename &quot;$PROJECT_FILE_PATH&quot; .xcodeproj)&#10;XCCONFIG=&quot;${PROJECT_DIR}/${PROJECT_NAME}/BuildNumber.xcconfig&quot;&#10;STATE_FILE=&quot;${PROJECT_DIR}/${PROJECT_NAME}/.buildnumber.global&quot;&#10;&#10;# 2) Lire le compteur global&#10;COUNT=0&#10;if [ -f &quot;$STATE_FILE&quot; ]; then&#10;  COUNT=$(cat &quot;$STATE_FILE&quot; | tr -d &apos;[:space:]&apos; || true)&#10;  if ! echo &quot;$COUNT&quot; | grep -Eq &apos;^[0-9]+$&apos;; then&#10;    COUNT=0&#10;  fi&#10;fi&#10;&#10;# 3) Incr&#xe9;menter&#10;COUNT=$(( COUNT + 1 ))&#10;&#10;# 4) Ecrire la nouvelle valeur dans l&#x2019;xcconfig&#10;mkdir -p &quot;$(dirname &quot;$XCCONFIG&quot;)&quot;&#10;: &gt; &quot;$XCCONFIG&quot; # vide le fichier&#10;echo &quot;CURRENT_PROJECT_VERSION = $COUNT&quot; &gt;&gt; &quot;$XCCONFIG&quot;&#10;&#10;# 5) Persister le compteur&#10;echo &quot;$COUNT&quot; &gt; &quot;$STATE_FILE&quot;&#10;&#10;echo &quot;Updated build number to: $COUNT&quot;&#10;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "035D4FC12E5B2D82002F62C3"
+                     BuildableName = "DataBaseManager.app"
+                     BlueprintName = "DataBaseManager"
+                     ReferencedContainer = "container:DataBaseManager.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PreActions>
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
@@ -79,5 +115,23 @@
    <ArchiveAction
       buildConfiguration = "Release"
       revealArchiveInOrganizer = "YES">
+      <PreActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "#!/bin/sh&#10;set -euo pipefail&#10;&#10;# 1) D&#xe9;finir chemins&#10;PROJECT_NAME=$(basename &quot;$PROJECT_FILE_PATH&quot; .xcodeproj)&#10;XCCONFIG=&quot;${PROJECT_DIR}/${PROJECT_NAME}/BuildNumber.xcconfig&quot;&#10;STATE_FILE=&quot;${PROJECT_DIR}/${PROJECT_NAME}/.buildnumber.global&quot;&#10;&#10;# 2) Lire le compteur global&#10;COUNT=0&#10;if [ -f &quot;$STATE_FILE&quot; ]; then&#10;  COUNT=$(cat &quot;$STATE_FILE&quot; | tr -d &apos;[:space:]&apos; || true)&#10;  if ! echo &quot;$COUNT&quot; | grep -Eq &apos;^[0-9]+$&apos;; then&#10;    COUNT=0&#10;  fi&#10;fi&#10;&#10;# 3) Incr&#xe9;menter&#10;COUNT=$(( COUNT + 1 ))&#10;&#10;# 4) Ecrire la nouvelle valeur dans l&#x2019;xcconfig&#10;mkdir -p &quot;$(dirname &quot;$XCCONFIG&quot;)&quot;&#10;: &gt; &quot;$XCCONFIG&quot; # vide le fichier&#10;echo &quot;CURRENT_PROJECT_VERSION = $COUNT&quot; &gt;&gt; &quot;$XCCONFIG&quot;&#10;&#10;# 5) Persister le compteur&#10;echo &quot;$COUNT&quot; &gt; &quot;$STATE_FILE&quot;&#10;&#10;echo &quot;Updated build number to: $COUNT&quot;&#10;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "035D4FC12E5B2D82002F62C3"
+                     BuildableName = "DataBaseManager.app"
+                     BlueprintName = "DataBaseManager"
+                     ReferencedContainer = "container:DataBaseManager.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PreActions>
    </ArchiveAction>
 </Scheme>

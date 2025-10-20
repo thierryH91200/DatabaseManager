@@ -57,6 +57,7 @@ private struct LeftPanelView: View {
     @State private var showCopySuccessAlert = false
     
     var body: some View {
+        
         VStack(spacing: 20) {
             Spacer()
             
@@ -75,8 +76,13 @@ private struct LeftPanelView: View {
                 .foregroundColor(.secondary)
             
             // Use interpolation so LocalizedStringResource can handle formatting
+//            if let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
+////                print("Numéro de test build : \(build)")
+//            }
 
             Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"))")
+            
+            
             .foregroundColor(.secondary)
             
             // Actions principales
@@ -89,6 +95,7 @@ private struct LeftPanelView: View {
                                      style: .borderedProminent) {
                     showSavePanel()
                 }
+            
                 
                 // 2
                 UniformLabeledButton(String(localized: "Open existing document..."),
