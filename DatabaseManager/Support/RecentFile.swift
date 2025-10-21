@@ -94,16 +94,13 @@ struct RecentFileRow: View {
                 Button(String(localized: "Open")) {
                     containerManager.openDatabase(at: recentFile.url)
                 }
-                
                 Button(String(localized: "Show in Finder")) {
                     NSWorkspace.shared.activateFileViewerSelecting([recentFile.url])
                 }
-                
                 Divider()
-            }
-            
-            Button(String(localized: "Remove from list"), role: .destructive) {
-                containerManager.removeFromRecentFiles(url: recentFile.url)
+                Button(String(localized: "Remove from list"), role: .destructive) {
+                    containerManager.removeFromRecentFiles(url: recentFile.url)
+                }
             }
         }
     }

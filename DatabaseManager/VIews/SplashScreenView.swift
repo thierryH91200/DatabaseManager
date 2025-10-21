@@ -60,29 +60,29 @@ private struct LeftPanelView: View {
         
         VStack(spacing: 20) {
             Spacer()
-            
-            Image("iconDataManager")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100, height: 100)
-                .foregroundColor(.accentColor)
-            
-            Text(String(localized: "Database Manager"))
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            
-            Text("Manage your SwiftData databases")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
-            // Use interpolation so LocalizedStringResource can handle formatting
-//            if let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
-////                print("Numéro de test build : \(build)")
+            VStack {
+                
+                Image("iconDataManager")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .foregroundColor(.accentColor)
+                
+                Text(String(localized: "Database Manager"))
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                
+                Text("Manage your SwiftData databases")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
+                Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"))")
+            }
+//            .onAppear {
+//                if let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
+//                    print("Numéro de test build : \(build)")
+//                }
 //            }
-
-            Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"))")
-            
-            
             .foregroundColor(.secondary)
             
             // Actions principales

@@ -48,6 +48,24 @@ il est improtant de définir schema à votre convenance
 celle ci est défini
 dans le fichier "DatabaseManagerApp"
 
+créer d'abord le fichier Model
+
+'
+@Model
+class Person {
+    var id: UUID
+    var name: String
+    var age: Int
+    
+    init(name: String, age: Int) {
+        self.id = UUID()
+        self.name = name
+        self.age = age
+    }
+}   
+"
+
+
 final class AppSchema {
     static let shared = AppSchema()
       
