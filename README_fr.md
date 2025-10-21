@@ -50,7 +50,9 @@ dans le fichier "DatabaseManagerApp"
 
 // pour l'incrementation de la build
 // https://blog.gingerbeardman.com/2025/06/28/automatic-build-number-incrementing-in-xcode/
-[Increment  build](https://blog.gingerbeardman.com/2025/06/28/automatic-build-number-incrementing-in-xcode/).
+
+
+[Increment](https://blog.gingerbeardman.com/2025/06/28/automatic-build-number-incrementing-in-xcode/).
 
 
 # Mise en place de votre base de données
