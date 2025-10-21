@@ -48,6 +48,12 @@ il est improtant de définir schema à votre convenance
 celle ci est défini
 dans le fichier "DatabaseManagerApp"
 
+// pour l'incrementation de la build
+// https://blog.gingerbeardman.com/2025/06/28/automatic-build-number-incrementing-in-xcode/
+[Increment  build](https://blog.gingerbeardman.com/2025/06/28/automatic-build-number-incrementing-in-xcode/).
+
+
+# Mise en place de votre base de données
 
 ## 1 - Créer d'abord le fichier Model
 
@@ -162,10 +168,9 @@ final class BookManager {
     }
 }
 ```
-## 2 - Créer un CRUD dans votre ModelManager
 
 ## 3 - Dans le fichier DatabaseManagerApp
-``
+```
 final class AppSchema {
     static let shared = AppSchema()
       
@@ -174,9 +179,6 @@ final class AppSchema {
     private init() {}
 }
 ```
-
-
-Créer un CRUD dans votre ModelManager
-
-tout ce qui fait partie du dossier MainAppp fait partide votre application 
+# Important
+Tout ce qui fait partie du dossier MainAppp fait parti de votre application 
 le reste fait partie du manager de base

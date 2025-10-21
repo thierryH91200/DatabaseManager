@@ -94,7 +94,7 @@ struct PersonListView: View {
     @State private var newPersonName = ""
     @State private var newPersonAge = 25
     
-    @State private var people: [Person] = []
+    @State private var peoples: [Person] = []
     @State private var selectedItem: Person.ID?
     @State private var sortOrder = [KeyPathComparator(\Person.name)]
     
@@ -120,7 +120,7 @@ struct PersonListView: View {
     
     var body: some View {
         VStack {
-            if people.isEmpty {
+            if peoples.isEmpty {
                 VStack(spacing: 20) {
                     Image(systemName: "person.3")
                         .font(.system(size: 50))
@@ -138,7 +138,7 @@ struct PersonListView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                Table(people, selection: $selectedItem, sortOrder: $sortOrder, columns: {
+                Table(peoples, selection: $selectedItem, sortOrder: $sortOrder, columns: {
                     TableColumn(String(localized: "Name",table: "MainApp"), value: \.name)
                     TableColumn(String(localized: "Town",table: "MainApp"), value: \.town)
                     TableColumn(String(localized: "Age",table: "MainApp")) { person in
@@ -149,7 +149,7 @@ struct PersonListView: View {
                     }
                 })
                 .onChange(of: sortOrder) { _, newOrder in
-                    people.sort(using: newOrder)
+                    peoples.sort(using: newOrder)
                 }
                 .gesture(
                     TapGesture(count: 2).onEnded {
@@ -192,7 +192,7 @@ struct PersonListView: View {
                         if let person = modelContext.model(for: id) as? Person {
                             detailPerson = person
                             showingDetail = true
-                        } else if let person = people.first(where: { $0.id == id }) {
+                        } else if let person = peoples.first(where: { $0.id == id }) {
                             // fallback via la liste en mémoire si nécessaire
                             detailPerson = person
                             showingDetail = true
@@ -221,7 +221,7 @@ struct PersonListView: View {
                 ) {
                     if let manager = undoManager, manager.canUndo {
                         manager.undo()
-                        people = PersonManager.shared.fetchAll()
+                        peoples = PersonManager.shared.fetchAll()
                     }
                 }
                 UniformLabeledButton(
@@ -233,7 +233,7 @@ struct PersonListView: View {
                 ) {
                     if let manager = undoManager, manager.canRedo {
                         manager.redo()
-                        people = PersonManager.shared.fetchAll()
+                        peoples = PersonManager.shared.fetchAll()
                     }
                 }
             }
@@ -247,13 +247,13 @@ struct PersonListView: View {
             }
         }
         .onAppear {
-            people = PersonManager.shared.fetchAll()
+            peoples = PersonManager.shared.fetchAll()
         }
         
         .sheet(isPresented: $isAddDialogPresented,
                onDismiss: {
             // Rafraîchir après création/annulation
-            people = PersonManager.shared.fetchAll()
+            peoples = PersonManager.shared.fetchAll()
         }) {
             PersonFormView(
                 isPresented: $isAddDialogPresented,
@@ -265,9 +265,9 @@ struct PersonListView: View {
         .sheet(isPresented: $isEditDialogPresented,
                onDismiss: {
             // Rafraîchir après édition/annulation
-            people = PersonManager.shared.fetchAll()
+            peoples = PersonManager.shared.fetchAll()
         }) {
-            let safePerson = people.first(where: { $0.id == selectedItem })
+            let safePerson = peoples.first(where: { $0.id == selectedItem })
             PersonFormView(
                 isPresented: $isEditDialogPresented,
                 isModeCreate: $isModeCreate,
@@ -277,10 +277,10 @@ struct PersonListView: View {
         
         .sheet(isPresented: $showingDetail, onDismiss: {
             // rafraîchir si des modifications ont eu lieu
-            people = PersonManager.shared.fetchAll()
+            peoples = PersonManager.shared.fetchAll()
         }) {
             let id = selectedItem
-            let item = people.first(where: { $0.id == id })
+            let item = peoples.first(where: { $0.id == id })
             if let person = item {
                 PersonDetailView(person: person)
             } else {
@@ -292,14 +292,14 @@ struct PersonListView: View {
     
     private func openDetailForSelected() {
         guard let id = selectedItem,
-              let item = people.first(where: { $0.id == id }) else { return }
+              let item = peoples.first(where: { $0.id == id }) else { return }
         detailPerson = item
         showingDetail = true
     }
     
     private func delete() {
         if let id = selectedItem,
-           let item = people.first(where: { $0.id == id }) {
+           let item = peoples.first(where: { $0.id == id }) {
             lastDeletedID = id
             
             // Suppression via repository (Undo/Redo et save inclus)
@@ -309,18 +309,18 @@ struct PersonListView: View {
                 selectedItem = nil
             }
             // Refetch après mutation
-            people = PersonManager.shared.fetchAll()
+            peoples = PersonManager.shared.fetchAll()
         }
     }
     
     private func deletePeople(offsets: IndexSet) {
         withAnimation {
             // Supprimer via le repository pour chaque index, puis refetch
-            let toDelete = offsets.map { people[$0] }
+            let toDelete = offsets.map { peoples[$0] }
             toDelete.forEach { person in
                 PersonManager.shared.delete(person: person)
             }
-            people = PersonManager.shared.fetchAll()
+            peoples = PersonManager.shared.fetchAll()
         }
     }
 }
