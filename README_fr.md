@@ -44,15 +44,14 @@ Gestionnaire moderne pour bases de données SwiftData sur macOS.
    git clone <url-du-repo>
 
 Si vous voulez changer de base de données
-il est improtant de définir schema à votre convenance
-celle ci est défini
-dans le fichier "DatabaseManagerApp"
+il est important de définir schema à votre convenance
+celle ci est défini dans le fichier "DatabaseManagerApp"
 
 // pour l'incrementation de la build
 // https://blog.gingerbeardman.com/2025/06/28/automatic-build-number-incrementing-in-xcode/
 
 
-[Increment](https://blog.gingerbeardman.com/2025/06/28/automatic-build-number-incrementing-in-xcode/).
+Blog   [Increment](https://blog.gingerbeardman.com/2025/06/28/automatic-build-number-incrementing-in-xcode/).
 
 
 # Mise en place de votre base de données
