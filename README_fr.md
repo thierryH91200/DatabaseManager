@@ -48,7 +48,7 @@ il est improtant de définir schema à votre convenance
 celle ci est défini
 dans le fichier "DatabaseManagerApp"
 
-créer d'abord le fichier Model
+Créer d'abord le fichier Model
 
 '
 @Model
