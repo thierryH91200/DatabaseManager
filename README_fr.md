@@ -50,8 +50,11 @@ dans le fichier "DatabaseManagerApp"
 
 Créer d'abord le fichier Model
 
-'
+
+"
+
 @Model
+
 class Person {
     var id: UUID
     var name: String
