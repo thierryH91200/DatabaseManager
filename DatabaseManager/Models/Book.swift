@@ -1,57 +1,9 @@
-# DatabaseManager
-
-
-
-
-Gestionnaire moderne pour bases de données SwiftData sur macOS.
-
-<a href="README.md">English</a> | <a href="README_fr.md">Français</a>
-
-
-<p align="center">
-<img src="Doc/Capture1_fr.png" alt="splsh">
-<p align="center">
-<em>Welcome</em>
-</p>
-</p>
-
-<p align="center">
-<img src="Doc/Capture2_fr.png" alt="main">
-<p align="center">
-<em>Main</em>
-</p>
-</p>
-
-
-## Présentation
-
-**DatabaseManager** est une application macOS permettant de créer, ouvrir et gérer des bases de données au format SwiftData. L’application propose une interface moderne (SwiftUI), la gestion de fichiers récents, et la manipulation d'entités Person (nom, âge, date de création).
-
-## Fonctionnalités
-
-- Création d’une nouvelle base de données SwiftData
-- Ouverture de bases existantes
-- Liste des fichiers récents
-- Ajout, modification, suppression de personnes
-- Affichage des informations détaillées (nom, âge, date)
-- Réinitialisation des préférences utilisateur
-- Support du mode sombre
-
-## Installation
-
-1. Clone ce dépôt :
-   ```sh
-   git clone <url-du-repo>
-
-Si vous voulez changer de base de données
-il est improtant de définir schema à votre convenance
-celle ci est défini
-dans le fichier "DatabaseManagerApp"
-
-
-## 1 - Créer d'abord le fichier Model
-
-```
+//
+//  Book.swift
+//  DataBaseManager
+//
+//  Created by thierryH24 on 21/10/2025.
+//
 
 import SwiftData
 import Foundation
@@ -68,11 +20,8 @@ class Book {
         self.genre = genre
     }
 }
-```
 
-## 2 - Créer un CRUD dans votre ModelManager
 
-```
 @MainActor
 @Observable
 final class BookManager {
@@ -160,23 +109,7 @@ final class BookManager {
             print("Error saving after delete Person: \(error.localizedDescription)")
         }
     }
+
+
+
 }
-```
-## 2 - Créer un CRUD dans votre ModelManager
-
-## 3 - Dans le fichier DatabaseManagerApp
-``
-final class AppSchema {
-    static let shared = AppSchema()
-      
-    let schema = Schema([ Book.self])
-    
-    private init() {}
-}
-```
-
-
-Créer un CRUD dans votre ModelManager
-
-tout ce qui fait partie du dossier MainAppp fait partide votre application 
-le reste fait partie du manager de base

@@ -65,7 +65,6 @@ final class PersonManager {
         do {
             try context.save()
         } catch {
-            // Log technique; tu peux remplacer par OSLog si tu préfères
             logger.error("Error saving after create Person: \(error.localizedDescription, privacy: .public)")
         }
         return person
