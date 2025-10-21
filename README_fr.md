@@ -51,8 +51,8 @@ dans le fichier "DatabaseManagerApp"
 Créer d'abord le fichier Model
 
 
-"
 
+```
 @Model
 
 class Person {
@@ -66,7 +66,7 @@ class Person {
         self.age = age
     }
 }   
-"
+```
 
 
 final class AppSchema {
