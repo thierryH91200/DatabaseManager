@@ -44,7 +44,7 @@ Gestionnaire moderne pour bases de données SwiftData sur macOS.
    git clone <url-du-repo>
 
 Si vous voulez changer de base de données
-il est important de définir schema à votre convenance
+il est important de définir la variable "schema" à votre convenance
 celle ci est défini dans le fichier "DatabaseManagerApp"
 
 // pour l'incrementation de la build

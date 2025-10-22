@@ -21,7 +21,6 @@ class Book {
     }
 }
 
-
 @MainActor
 @Observable
 final class BookManager {
@@ -37,6 +36,7 @@ final class BookManager {
     func reset() {
         books.removeAll()
     }
+    
     // MARK: - Create
     func create(title: String, author: String, genre: String) -> Book? {
         let book = Book(title: title, author: author, genre: genre)
@@ -57,7 +57,7 @@ final class BookManager {
     // MARK: - Read
     func readAll(sortedBy sortDescriptors: [SortDescriptor<Book>] = [SortDescriptor(\Book.author, order: .forward)]) -> [Book] {
         guard let context = modelContext else {
-            print("ModelContext missing in fetchAll(); returning empty list.")
+            print("ModelContext missing in readAll(); returning empty list.")
             return []
         }
         

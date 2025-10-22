@@ -20,15 +20,13 @@ struct SplashScreenView: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            // Logo/Button
             LeftPanelView()
-            
             Divider()
-            
-            // Fichiers récents
             RecentProjectsListView()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(minWidth: 700, idealWidth: 900, maxWidth: .infinity,
+               minHeight: 450, idealHeight: 560, maxHeight: .infinity,
+               alignment: .center)
         .background(Color(NSColor.windowBackgroundColor))
         .fileImporter(
             isPresented: $showingFilePicker,
