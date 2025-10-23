@@ -120,10 +120,11 @@ class ContainerManager: ObservableObject {
             // schema  -->  schema: AppSchema.shared.schema
             // Imporotant
             let container = try ModelContainer(for: schema, configurations: config)
-            let context = container.mainContext
             
             // Centraliser le ModelContext et l’UndoManager
+            let context = container.mainContext
             let globalUndo = UndoManager()
+            
             DataContext.shared.context = context
             DataContext.shared.undoManager = globalUndo
             context.undoManager = globalUndo

@@ -3,10 +3,13 @@ import SwiftUI
 import SwiftData
 
 struct PersonDetailView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Environment(\.undoManager) private var undoManager
+//    @Environment(\.modelContext) private var modelContext
+//    @Environment(\.undoManager) private var undoManager
     @Environment(\.dismiss) private var dismiss
     
+    @State var modelContext : ModelContext?
+    @State var undoManager : UndoManager?
+
     @State var person: Person
     
     @State private var showingEdit = false
@@ -93,6 +96,11 @@ struct PersonDetailView: View {
         .padding()
         .frame(minWidth: 420, minHeight: 300)
         .navigationTitle("Person Details")
+        .onAppear {
+            modelContext = DataContext.shared.context
+            undoManager = DataContext.shared.undoManager
+        }
+
         .sheet(isPresented: $showingEdit, onDismiss: {
             // rafraîchir l’état local au besoin (si la référence a changé)
         }) {

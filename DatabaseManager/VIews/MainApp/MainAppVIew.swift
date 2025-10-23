@@ -13,6 +13,7 @@ import Combine
 // MARK: - Vue principale de l'app
 struct MainAppView: View {
     
+    
     @EnvironmentObject var containerManager: ContainerManager
     @State private var isDarkMode = false
     
@@ -88,8 +89,12 @@ struct MainAppView: View {
 // MARK: - Vue liste des personnes (simplifiée)
 struct PersonListView: View {
     
-    @Environment(\.modelContext) private var modelContext
-    @Environment(\.undoManager) private var undoManager
+//    @Environment(\.modelContext) private var modelContext
+//    @Environment(\.undoManager) private var undoManager
+    
+    @State var modelContext : ModelContext?
+    @State var undoManager : UndoManager?
+
     
     @State private var newPersonName = ""
     @State private var newPersonAge = 25
@@ -189,7 +194,7 @@ struct PersonListView: View {
                 ) {
                     // Résoudre l'ID sélectionné vers une Person complète, puis l’assigner
                     if let id = selectedItem {
-                        if let person = modelContext.model(for: id) as? Person {
+                        if let person = modelContext?.model(for: id) as? Person {
                             detailPerson = person
                             showingDetail = true
                         } else if let person = peoples.first(where: { $0.id == id }) {
@@ -247,6 +252,9 @@ struct PersonListView: View {
             }
         }
         .onAppear {
+            modelContext = DataContext.shared.context
+            undoManager = DataContext.shared.undoManager
+
             peoples = PersonManager.shared.fetchAll()
         }
         

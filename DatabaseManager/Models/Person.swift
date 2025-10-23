@@ -38,7 +38,9 @@ final class PersonManager {
     var persons: [Person] = []
     
     // Contexte et UndoManager actuels (fournis par ContainerManager via DataContext.shared)
-    private var modelContext: ModelContext? { DataContext.shared.context }
+    private var modelContext: ModelContext? {
+        DataContext.shared.context
+    }
     private var undoManager: UndoManager? { DataContext.shared.undoManager }
 
     private init () {}
@@ -121,11 +123,11 @@ final class PersonManager {
         context.delete(person)
         context.undoManager?.endUndoGrouping()
         
-        do {
-            try context.save()
-        } catch {
-            logger.error("Error saving after delete Person: \(error.localizedDescription, privacy: .public)")
-        }
+//        do {
+//            try context.save()
+//        } catch {
+//            logger.error("Error saving after delete Person: \(error.localizedDescription, privacy: .public)")
+//        }
     }
     
     // MARK: - Fetch

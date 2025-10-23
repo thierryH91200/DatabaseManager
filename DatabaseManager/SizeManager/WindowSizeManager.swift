@@ -20,21 +20,25 @@ class WindowSizeManager: NSObject, ObservableObject, NSWindowDelegate {
 
     // Restaure la taille depuis UserDefaults
     func applySavedSize(to window: NSWindow) {
-        let width = UserDefaults.standard.double(forKey: "\(windowID)_width")
+        let width  = UserDefaults.standard.double(forKey: "\(windowID)_width")
         let height = UserDefaults.standard.double(forKey: "\(windowID)_height")
         let x      = UserDefaults.standard.double(forKey: "\(windowID)_x")
         let y      = UserDefaults.standard.double(forKey: "\(windowID)_y")
 
-        if width > 0, height > 0 {
+        guard width > 0, height > 0 else { return }
+
+        DispatchQueue.main.async { [weak window] in
+            guard let window = window else { return }
             var frame = window.frame
             frame.size = CGSize(width: width, height: height)
             if x != 0 || y != 0 {
                 frame.origin = CGPoint(x: x, y: y)
             }
-            window.setFrame(frame, display: true)
+            window.setFrame(frame, display: false) // éviter le display synchrone
+            window.displayIfNeeded()
         }
     }
-
+    
     // Sauvegarde la taille et la position à chaque redimensionnement ou déplacement
     func windowDidResize(_ notification: Notification) {
         saveFrame(notification: notification)

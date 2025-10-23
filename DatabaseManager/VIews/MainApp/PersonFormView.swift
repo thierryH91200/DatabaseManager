@@ -11,8 +11,11 @@ import SwiftData
 
 // Vue pour la boîte de dialogue d'ajout
 struct PersonFormView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Environment(\.undoManager) private var undoManager
+//    @Environment(\.modelContext) private var modelContext
+//    @Environment(\.undoManager) private var undoManager
+    
+    @State var modelContext : ModelContext?
+    @State var undoManager : UndoManager?
 
     @Environment(\.dismiss) private var dismiss
     
@@ -89,6 +92,9 @@ struct PersonFormView: View {
                 .frame(height: 10)
         }
         .onAppear {
+            modelContext = DataContext.shared.context
+            undoManager = DataContext.shared.undoManager
+            
             if let person = person {
                 name = person.name
                 town = person.town
@@ -101,16 +107,16 @@ struct PersonFormView: View {
         if isModeCreate {
             let newItem = PersonManager.shared.create(name: name, town: town, age: age)
             do {
-                try modelContext.save()
+                try modelContext?.save()
             } catch {
                 print("Erreur de sauvegarde SwiftData:", error)
             }
 
             // Undo pour la création
-            undoManager?.registerUndo(withTarget: modelContext) { context in
+            undoManager?.registerUndo(withTarget: modelContext!) { context in
                 context.delete(newItem)
                 do {
-                    try modelContext.save()
+                    try modelContext?.save()
                 } catch {
                     print("Erreur de sauvegarde SwiftData:", error)
                 }
@@ -123,7 +129,7 @@ struct PersonFormView: View {
             existingItem.town = town
             existingItem.age = age
             do {
-                try modelContext.save()
+                try modelContext?.save()
             } catch {
                 print("Erreur de sauvegarde SwiftData:", error)
             }
@@ -133,7 +139,7 @@ struct PersonFormView: View {
                 target.town = oldTown
                 target.age = oldAge
                 do {
-                    try modelContext.save()
+                    try modelContext?.save()
                 } catch {
                     print("Erreur de sauvegarde SwiftData:", error)
                 }
