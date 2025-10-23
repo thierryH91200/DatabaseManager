@@ -116,10 +116,10 @@ struct PersonListView: View {
     var manager : UndoManager? {
         UndoManager()
     }
-    var canUndo : Bool? {
+    var canUndo : Bool {
         undoManager?.canUndo ?? false
     }
-    var canRedo : Bool? {
+    var canRedo : Bool {
         undoManager?.canRedo ?? false
     }
     
@@ -224,11 +224,13 @@ struct PersonListView: View {
                     style: .borderedProminent,
                     tint: .gray
                 ) {
-                    if let manager = undoManager, manager.canUndo {
+                    if let manager = undoManager, canUndo {
                         manager.undo()
                         peoples = PersonManager.shared.fetchAll()
                     }
                 }
+                .disabled(canUndo == false)
+
                 UniformLabeledButton(
                     String(localized: "Redo",table: "MainApp"),
                     systemImage: "arrow.uturn.forward",
@@ -236,11 +238,13 @@ struct PersonListView: View {
                     style: .borderedProminent,
                     tint: .gray
                 ) {
-                    if let manager = undoManager, manager.canRedo {
+                    if let manager = undoManager, canRedo {
                         manager.redo()
                         peoples = PersonManager.shared.fetchAll()
                     }
                 }
+                .disabled(canRedo == false)
+
             }
         }
         .toolbar {
