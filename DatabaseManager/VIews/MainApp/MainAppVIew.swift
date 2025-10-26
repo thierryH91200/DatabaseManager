@@ -9,14 +9,12 @@ import SwiftUI
 import SwiftData
 import Combine
 
-
 // MARK: - Vue principale de l'app
 struct MainAppView: View {
     
-    
     @EnvironmentObject var containerManager: ContainerManager
     @State private var isDarkMode = false
-    
+
     var body: some View {
         NavigationSplitView {
             // Sidebar
@@ -89,7 +87,7 @@ struct MainAppView: View {
 // MARK: - Vue liste des personnes (simplifiée)
 struct PersonListView: View {
     
-//    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var modelContext1
 //    @Environment(\.undoManager) private var undoManager
     
     @State var modelContext : ModelContext?
@@ -222,29 +220,30 @@ struct PersonListView: View {
                     systemImage: "arrow.uturn.backward",
                     minWidth: 100,
                     style: .borderedProminent,
-                    tint: .gray
+                    tint: canUndo ? .yellow : .gray
                 ) {
                     if let manager = undoManager, canUndo {
                         manager.undo()
                         peoples = PersonManager.shared.fetchAll()
                     }
                 }
-                .disabled(canUndo == false)
+                .opacity(canUndo ? 1 : 0.6)
+                .allowsHitTesting(canUndo)
 
                 UniformLabeledButton(
                     String(localized: "Redo",table: "MainApp"),
                     systemImage: "arrow.uturn.forward",
                     minWidth: 100,
                     style: .borderedProminent,
-                    tint: .gray
+                    tint: canRedo ? .yellow : .gray
                 ) {
                     if let manager = undoManager, canRedo {
                         manager.redo()
                         peoples = PersonManager.shared.fetchAll()
                     }
                 }
-                .disabled(canRedo == false)
-
+                .opacity(canRedo ? 1 : 0.6)
+                .allowsHitTesting(canRedo)
             }
         }
         .toolbar {
@@ -258,7 +257,6 @@ struct PersonListView: View {
         .onAppear {
             modelContext = DataContext.shared.context
             undoManager = DataContext.shared.undoManager
-
             peoples = PersonManager.shared.fetchAll()
         }
         
