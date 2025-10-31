@@ -6,12 +6,24 @@
       "scale" : "1x"
     },
     {
+      "filename" : "iconDataManager 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "iconDataManager 2.png",
       "idiom" : "universal",
       "scale" : "3x"
+    },
+    {
+      "filename" : "iconDataManager 3.png",
+      "idiom" : "mac",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "iconDataManager 4.png",
+      "idiom" : "mac",
+      "scale" : "2x"
     }
   ],
   "info" : {

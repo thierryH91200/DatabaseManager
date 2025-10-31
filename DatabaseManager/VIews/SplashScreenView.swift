@@ -53,20 +53,25 @@ private struct LeftPanelView: View {
     @State private var showingFilePicker = false
     @State private var showResetAlert = false
     @State private var showCopySuccessAlert = false
+    private var appName: String {
+        (Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String)
+        ?? (Bundle.main.infoDictionary?["CFBundleName"] as? String)
+        ?? "Unknown App"
+    }
+
     
     var body: some View {
         
         VStack(spacing: 20) {
             Spacer()
             VStack {
-                
                 Image("iconDataManager")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 100, height: 100)
+                    .frame(width: 40, height: 40)
                     .foregroundColor(.accentColor)
                 
-                Text(String(localized: "Database Manager"))
+                Text(appName)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 
@@ -76,11 +81,6 @@ private struct LeftPanelView: View {
                 
                 Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"))")
             }
-//            .onAppear {
-//                if let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
-//                    print("Numéro de test build : \(build)")
-//                }
-//            }
             .foregroundColor(.secondary)
             
             // Actions principales

@@ -9,20 +9,27 @@ import UniformTypeIdentifiers
 @main
 struct DatabaseManagerApp: App {
     
+    @Environment(\.openWindow) private var openWindow
+    
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var containerManager = ContainerManager()
     
     init() {
         ColorTransformer.register()
     }
-
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(containerManager)
-//                .frame(minWidth: 900, minHeight: 600)
         }
         .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("About \(Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? "l’app")") {
+                    openWindow(id: "about")
+                }
+            }
+            
             CommandGroup(after: .newItem) {
                 Button(String(localized: "Create New Document...")) {
                     presentSavePanelAndCreate()
@@ -53,6 +60,10 @@ struct DatabaseManagerApp: App {
                 .keyboardShortcut("?", modifiers: [.command])
             }
         }
+        Window("About", id: "about") {
+            AboutView()
+        }
+        .defaultSize(width: 72, height: 72)
     }
     
     // MARK: - Helpers pour les panneaux système
@@ -93,7 +104,7 @@ struct DatabaseManagerApp: App {
 
 final class AppSchema {
     static let shared = AppSchema()
-        
+    
     let schema = Schema([ Person.self])
     private init() {}
 }
