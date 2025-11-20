@@ -94,7 +94,6 @@ private struct LeftPanelView: View {
                     showSavePanel()
                 }
             
-                
                 // 2
                 UniformLabeledButton(String(localized: "Open existing document..."),
                                      systemImage: "doc.badge.ellipsis",
@@ -166,7 +165,12 @@ private struct LeftPanelView: View {
     private func showSavePanel() {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.store]
-        panel.nameFieldStringValue = "New Base"
+        // Build a timestamp like "2025-09-06 19-42-37" and use it in the default filename
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd HH-mm-ss"
+        let timestamp = formatter.string(from: Date())
+        panel.nameFieldStringValue = "New Base \(timestamp)"
         panel.canCreateDirectories = true
         panel.allowsOtherFileTypes = false
         
@@ -255,3 +259,4 @@ private struct RecentProjectsListView: View {
         .frame(width: 400)
     }
 }
+

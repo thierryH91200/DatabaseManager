@@ -9,6 +9,14 @@ import SwiftUI
 import SwiftData
 import Combine
 
+enum EnumError: Error {
+    case contextNotConfigured
+    case accountNotFound
+    case invalidStatusType
+    case saveFailed
+    case fetchFailed
+}
+
 private func logUI(_ message: String, pr: Bool = false) {
     if !pr { return }
     let ts = ISO8601DateFormatter().string(from: Date())
@@ -25,12 +33,13 @@ class ContainerManager: ObservableObject {
     
     private let recentFilesKey = "RecentDatabases"
     private let maxRecentFiles = 10
+    var context: ModelContext? = nil
     
     let schema = AppSchema.shared.schema
 
     init() {
-        loadRecentFiles()
-        logUI("ContainerManager.init - showingSplashScreen=\(showingSplashScreen)")
+        self.loadRecentFiles()
+        logUI("ContainerManager.init - showingSplashScreen=\(self.showingSplashScreen)")
     }
     
     // MARK: - Gestion des fichiers récents
@@ -128,6 +137,7 @@ class ContainerManager: ObservableObject {
             DataContext.shared.context = context
             DataContext.shared.undoManager = globalUndo
             context.undoManager = globalUndo
+            self.context = context
             
             initBDD()  // >--> Important
 
@@ -165,6 +175,7 @@ class ContainerManager: ObservableObject {
             DataContext.shared.context = context
             DataContext.shared.undoManager = globalUndo
             context.undoManager = globalUndo
+            self.context = context
             
             // Publier l'état courant
             currentContainer = container
@@ -208,9 +219,22 @@ class ContainerManager: ObservableObject {
             let emptyContainer = try? ModelContainer(for: DummyModel.self)
             DataContext.shared.container = emptyContainer
             DataContext.shared.context = ModelContext(emptyContainer!)
+            self.context = DataContext.shared.context
             DataContext.shared.undoManager = UndoManager()
         }
         showingSplashScreen = true
     }
-}
+    
+    func save () {
+        guard let context = context else { return }
+        do {
+            try context.save()
+        } catch {
+            EnumError.saveFailed
+        }
+    }
 
+    func undo() { context?.undoManager?.undo() }
+    func redo() { context?.undoManager?.redo() }
+
+}

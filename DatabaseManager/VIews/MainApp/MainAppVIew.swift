@@ -41,7 +41,6 @@ struct MainAppView: View {
                 .padding()
                 
                 Divider()
-                
                 Text(String(localized: "Contents of the database",table: "MainApp"))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -93,7 +92,6 @@ struct PersonListView: View {
     @State var modelContext : ModelContext?
     @State var undoManager : UndoManager?
 
-    
     @State private var newPersonName = ""
     @State private var newPersonAge = 25
     

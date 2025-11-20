@@ -81,9 +81,6 @@ final class BookManager {
             print("ModelContext missing in update(); aborting.")
             return
         }
-        let oldTitle = book.title
-        let oldAuthor = book.author
-        let oldGenre  = book.genre
                 
         book.title = title
         book.author = author
