@@ -55,5 +55,5 @@ in the file “DatabaseManagerApp”
 
 and to create a CRUD in your ModelManager.
 
-Everything that is part of the “MianAppp” folder belongs to your application;
+Everything that is part of the “MainAppp” folder belongs to your application;
 the rest is part of the database manager.
