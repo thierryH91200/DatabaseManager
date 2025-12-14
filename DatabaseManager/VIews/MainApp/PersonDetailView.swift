@@ -51,7 +51,7 @@ struct PersonDetailView: View {
                     Text("\(person.age)")
                 }
                 GridRow {
-                    Text(String(localized:"Ctrated at:",table: "MainApp"))
+                    Text(String(localized:"Created at:",table: "MainApp"))
                         .fontWeight(.medium)
                     Text(person.createdAt, style: .date)
                 }
