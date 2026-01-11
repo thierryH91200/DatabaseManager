@@ -20,7 +20,7 @@ struct DatabaseManagerApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            DataManagerView()
                 .environmentObject(containerManager)
         }
         .commands {

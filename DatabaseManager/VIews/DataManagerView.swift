@@ -3,7 +3,7 @@ import SwiftData
 import Combine
 
 // MARK: - Vue racine
-struct ContentView: View {
+struct DataManagerView: View {
     @EnvironmentObject var containerManager: ContainerManager
     
     // Deux gestionnaires distincts pour mémoriser/restaurer des tailles différentes
